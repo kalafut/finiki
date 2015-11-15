@@ -21,7 +21,7 @@ func TestPageString(t *testing.T) {
 	page.Encode(&b)
 
 	is.Equal(`title: some title
-date: 10 Nov 09 23:00 UTC
+date: 2009-11-10 23:00 UTC
 tags: tbd
 ---
 This is some content`, b.String())

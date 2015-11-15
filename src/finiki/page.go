@@ -9,12 +9,7 @@ import (
 	"time"
 )
 
-const dateFmt = time.RFC822
-
-type Folder struct {
-	folders map[string]Folder
-	pages   map[string]Page
-}
+const dateFmt = "2006-01-02 15:04 MST"
 
 type Page struct {
 	Title   string
@@ -81,6 +76,10 @@ func (p *Page) Encode(w io.Writer) {
 	buffer.WriteString(p.Content)
 
 	buffer.Flush()
+}
+
+func (p *Page) String() string {
+	return p.Title
 }
 
 func parseField(s string) (string, string, error) {
