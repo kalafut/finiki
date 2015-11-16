@@ -1,11 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+)
+
+func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
+}
 
 func main() {
-	f := NewFolder("sample")
+	storage := NewDumbStorage()
+	w := NewWiki(storage)
+	//f := NewFolder("sample")
 
-	printFolder(f, "")
+	//printFolder(f, "")
+
+	router := httprouter.New()
+	router.GET("/show/*path", w.Show)
+	router.GET("/edit/*path", w.Edit)
+	router.POST("/edit/*path", w.Update)
+
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
 func printFolder(f Folder, parent string) {

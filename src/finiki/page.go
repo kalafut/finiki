@@ -11,11 +11,16 @@ import (
 
 const dateFmt = "2006-01-02 15:04 MST"
 
+const (
+	Markdown = iota
+)
+
 type Page struct {
-	Title   string
-	Date    time.Time
-	Tags    []string
-	Content string
+	Title    string
+	Date     time.Time
+	Tags     []string
+	Content  string
+	Encoding int
 }
 
 type PageEncoder interface {
