@@ -15,6 +15,7 @@ const showTpl = `<!DOCTYPE html>
 const editTpl = `<!DOCTYPE html>
 <html>
 	<head>
+	<script src="http://cdn.ckeditor.com/4.5.5/basic/ckeditor.js"></script>
 	</head>
 	<body style="padding: 0.5em;">
 		<div class="container">
@@ -23,6 +24,11 @@ const editTpl = `<!DOCTYPE html>
 				<textarea name="text" style="width: 100%; height: 40em;">{{.Text}}</textarea>
 			</form>
 		</div>
+		<script>
+                // Replace the <textarea id="editor1"> with a CKEditor
+                // instance, using default configuration.
+                //CKEDITOR.replace( 'text' );
+            </script>
 	</body>
 </html>`
 
