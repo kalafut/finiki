@@ -13,7 +13,8 @@ func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func main() {
-	storage := NewDumbStorage()
+	//storage := NewDumbStorage()
+	storage := NewFlatFileStorage("sample")
 	w := NewWiki(storage)
 	//f := NewFolder("sample")
 

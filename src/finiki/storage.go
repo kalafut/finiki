@@ -1,5 +1,10 @@
 package main
 
+import (
+	"os"
+	"path"
+)
+
 type Storage interface {
 	GetPage(path string) Page
 	//GetPageRev(path string, rev int) *Page
@@ -29,6 +34,46 @@ func (s *DumbStorage) GetPage(path string) Page {
 
 func (s *DumbStorage) PutPage(path string, page Page) error {
 	s.db[path] = page
+
+	return nil
+}
+
+type FlatFileStorage struct {
+	root string
+}
+
+func NewFlatFileStorage(root string) *FlatFileStorage {
+	return &FlatFileStorage{
+		root: root,
+	}
+}
+
+func (s *FlatFileStorage) GetPage(reqpath string) Page {
+	fullpath := path.Join(s.root, reqpath, currentPage)
+
+	f, err := os.Open(fullpath)
+	if err == nil {
+		ptr, err := NewPage(f)
+		if err == nil {
+			return *ptr
+		}
+	}
+
+	return Page{Content: "This is some *test* **Markdown** for new page: `" + reqpath + "`!"}
+}
+
+func (s *FlatFileStorage) PutPage(reqpath string, page Page) error {
+	os.MkdirAll(path.Join(s.root, reqpath), 0755)
+
+	fullpath := path.Join(s.root, reqpath, currentPage)
+
+	f, err := os.Create(fullpath)
+	defer f.Close()
+
+	if err == nil {
+		page.Encode(f)
+
+	}
 
 	return nil
 }
