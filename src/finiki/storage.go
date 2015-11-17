@@ -60,7 +60,7 @@ func (s *FlatFileStorage) GetPage(reqpath string) Page {
 		}
 	}
 
-	return Page{Date: time.Now(), Content: "This is some *test* **Markdown** for new page: `" + reqpath + "`!"}
+	return Page{LastModified: time.Now(), Content: "This is some *test* **Markdown** for new page: `" + reqpath + "`!"}
 }
 
 func (s *FlatFileStorage) PutPage(reqpath string, page Page) error {

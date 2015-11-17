@@ -79,7 +79,7 @@ func readPageFolder(path string) (*Page, error) {
 		return nil, err
 	}
 
-	return NewPage(f)
+	return DecodePage(f)
 }
 
 func isPageFolder(path string) bool {

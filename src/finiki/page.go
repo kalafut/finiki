@@ -17,11 +17,11 @@ const (
 )
 
 type Page struct {
-	Title    string
-	Date     time.Time
-	Tags     []string
-	Encoding int
-	Content  string
+	Title        string
+	LastModified time.Time
+	Tags         []string
+	Encoding     int
+	Content      string
 }
 
 type PageEncoder interface {
@@ -42,7 +42,9 @@ func NewPageStoreV1(w io.Writer, r io.Reader) PageStoreV1 {
 }
 
 func NewPage() Page {
+	return Page{LastModified: time.Now()}
 }
+
 func DecodePage(input io.Reader) (*Page, error) {
 	var p Page
 
@@ -83,7 +85,7 @@ func (p *Page) Encode(w io.Writer) {
 	var buffer = bufio.NewWriter(w)
 
 	buffer.WriteString("title: " + p.Title + "\n")
-	buffer.WriteString("date: " + p.Date.Format(dateFmt) + "\n")
+	buffer.WriteString("date: " + p.LastModified.Format(dateFmt) + "\n")
 	buffer.WriteString("tags: tbd\n")
 	buffer.WriteString("---\n")
 	buffer.WriteString(p.Content)
@@ -92,11 +94,17 @@ func (p *Page) Encode(w io.Writer) {
 }
 
 func (p *Page) EncodeJSON(w io.Writer) {
+	p.LastModified = p.LastModified.Round(time.Second)
 	b, err := json.MarshalIndent(p, "", "\t")
 	if err != nil {
 		log.Fatal(err)
 	}
 	w.Write(b)
+}
+
+func (p *Page) SetContent(s string) {
+	p.Content = s
+	p.LastModified = roundedNow()
 }
 
 func (p *Page) String() string {
@@ -114,4 +122,8 @@ func parseField(s string) (string, string, error) {
 	val := strings.TrimSpace(s[idx+1:])
 
 	return field, val, nil
+}
+
+func roundedNow() time.Time {
+	return time.Now().Round(time.Second)
 }

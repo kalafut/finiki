@@ -13,7 +13,7 @@ func (wiki *Wiki) Update(w http.ResponseWriter, r *http.Request, ps httprouter.P
 
 	page := wiki.store.GetPage(path)
 	newText := r.PostFormValue("text")
-	page.Content = newText
+	page.SetContent(newText)
 
 	wiki.store.PutPage(path, page)
 
