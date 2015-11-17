@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"path"
+	"time"
 )
 
 type Storage interface {
@@ -53,13 +54,13 @@ func (s *FlatFileStorage) GetPage(reqpath string) Page {
 
 	f, err := os.Open(fullpath)
 	if err == nil {
-		ptr, err := NewPage(f)
+		ptr, err := DecodePage(f)
 		if err == nil {
 			return *ptr
 		}
 	}
 
-	return Page{Content: "This is some *test* **Markdown** for new page: `" + reqpath + "`!"}
+	return Page{Date: time.Now(), Content: "This is some *test* **Markdown** for new page: `" + reqpath + "`!"}
 }
 
 func (s *FlatFileStorage) PutPage(reqpath string, page Page) error {
@@ -71,7 +72,7 @@ func (s *FlatFileStorage) PutPage(reqpath string, page Page) error {
 	defer f.Close()
 
 	if err == nil {
-		page.Encode(f)
+		page.EncodeJSON(f)
 
 	}
 

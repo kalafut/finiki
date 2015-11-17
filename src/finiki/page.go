@@ -2,9 +2,10 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
 	"io"
-	"io/ioutil"
+	"log"
 	"strings"
 	"time"
 )
@@ -19,8 +20,8 @@ type Page struct {
 	Title    string
 	Date     time.Time
 	Tags     []string
-	Content  string
 	Encoding int
+	Content  string
 }
 
 type PageEncoder interface {
@@ -40,33 +41,40 @@ func NewPageStoreV1(w io.Writer, r io.Reader) PageStoreV1 {
 	return PageStoreV1{w: w, r: r}
 }
 
-func NewPage(input io.Reader) (*Page, error) {
+func NewPage() Page {
+}
+func DecodePage(input io.Reader) (*Page, error) {
 	var p Page
 
-	r := bufio.NewReader(input)
-	for {
-		line, err := r.ReadString('\n')
-		if strings.HasPrefix(line, "---") {
-			break
-		}
+	dec := json.NewDecoder(input)
+	dec.Decode(&p)
 
-		field, val, err := parseField(line)
-		if err != nil {
-			return nil, err
-		}
-		switch field {
-		case "title":
-			p.Title = val
-		case "date":
-			p.Date, err = time.Parse(dateFmt, val)
+	/*
+		r := bufio.NewReader(input)
+		for {
+			line, err := r.ReadString('\n')
+			if strings.HasPrefix(line, "---") {
+				break
+			}
+
+			field, val, err := parseField(line)
 			if err != nil {
-				return nil, errors.New("Invalid date")
+				return nil, err
+			}
+			switch field {
+			case "title":
+				p.Title = val
+			case "date":
+				p.Date, err = time.Parse(dateFmt, val)
+				if err != nil {
+					return nil, errors.New("Invalid date")
+				}
 			}
 		}
-	}
 
-	b, _ := ioutil.ReadAll(r)
-	p.Content = string(b)
+		b, _ := ioutil.ReadAll(r)
+		p.Content = string(b)
+	*/
 
 	return &p, nil
 }
@@ -81,6 +89,14 @@ func (p *Page) Encode(w io.Writer) {
 	buffer.WriteString(p.Content)
 
 	buffer.Flush()
+}
+
+func (p *Page) EncodeJSON(w io.Writer) {
+	b, err := json.MarshalIndent(p, "", "\t")
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(b)
 }
 
 func (p *Page) String() string {
