@@ -2,14 +2,16 @@
 A wiki for ...
 
 ## Todo
-- introduce pageinfo and wikiinfo(?) structures and files
-  - pageinfo will contain the current rev
-  - wikiinfo will contain recent changes
+- Stuff required for MVW:
+  - introduce pageinfo and wikiinfo(?) structures and files
+    - pageinfo will contain the current rev
+    - wikiinfo will contain recent changes
+  - config file
 - show page info
 - add wysiwyg editor
 - attachments
 
-  
+
 <!---
 ## File/Folder layout
 finiki uses text files and a defined folder layout for all storage:
@@ -24,7 +26,7 @@ data\
        revs\
            0
            1
-          
+
        attachments
 ```
 -->
