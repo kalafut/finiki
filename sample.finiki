@@ -1,0 +1,3 @@
+# The folder, preferably absolute, where finiki will store all wiki
+# data. For example:  "/Users/doej/Dropbox/finiki"
+data_location = "test"

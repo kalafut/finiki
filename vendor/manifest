@@ -8,6 +8,18 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/naoina/go-stringutil",
+			"repository": "https://github.com/naoina/go-stringutil",
+			"revision": "6b638e95a32d0c1131db0e7fe83775cbea4a0d0b",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/naoina/toml",
+			"repository": "https://github.com/naoina/toml",
+			"revision": "751171607256bb66e64c9f0220c00662420c38e9",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/russross/blackfriday",
 			"repository": "https://github.com/russross/blackfriday",
 			"revision": "0b647d0506a698cca42caca173e55559b12a69f2",

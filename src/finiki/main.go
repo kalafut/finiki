@@ -8,13 +8,15 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+var config = readLocalCfg()
+
 func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
 }
 
 func main() {
 	//storage := NewDumbStorage()
-	storage := NewFlatFileStorage("sample")
+	storage := NewFlatFileStorage(config.DataLocation)
 	w := NewWiki(storage)
 	//f := NewFolder("sample")
 
