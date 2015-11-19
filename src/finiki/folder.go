@@ -7,6 +7,7 @@ import (
 )
 
 const currentPage = "current"
+const PageInfoFilename = "pagefile"
 
 /*
 A Folder can contain either Folders or PageFolders
@@ -14,6 +15,10 @@ A Folder can contain either Folders or PageFolders
 type Folder struct {
 	folders map[string]Folder
 	pages   map[string]*Page
+}
+
+type PageInfo struct {
+	CurrentRev int
 }
 
 var root Folder
