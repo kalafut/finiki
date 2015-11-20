@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"net/http"
+	"regexp"
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
@@ -29,12 +30,13 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		page = &Page{Content: "Nothin'"}
 	}
 
+	parsedContent := preParse(page.Content)
 	vars := map[string]interface{}{
 		"Path": "/edit" + string(path),
-		"Text": BytesAsHTML(ParsedMarkdown(page.Content)),
+		"Text": BytesAsHTML(ParsedMarkdown(parsedContent)),
 	}
 
-	t := template.Must(template.New("show").Parse(showTpl))
+	t := template.Must(template.New("show").Parse(loadTemplate("show")))
 	t.Execute(w, vars)
 }
 
@@ -53,4 +55,10 @@ func BytesAsHTML(b []byte) template.HTML {
 // ParsedMarkdown returns provided bytes parsed as Markdown
 func ParsedMarkdown(b string) []byte {
 	return blackfriday.MarkdownCommon([]byte(b))
+}
+
+var reLink = regexp.MustCompile(`\[\[(.*?)\]\]`)
+
+func preParse(in string) string {
+	return reLink.ReplaceAllString(in, "[$1]($1)")
 }

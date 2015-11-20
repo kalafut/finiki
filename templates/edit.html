@@ -1,0 +1,25 @@
+<html>
+<head>
+<script src="https://toplan.github.io/js/vim.js"></script>
+<script src="http://cdn.ckeditor.com/4.5.5/basic/ckeditor.js"></script>
+</head>
+<body style="padding: 0.5em;">
+<div class="container">
+    <form action="{{.Path}}" method="POST">
+        <input type="submit" value="Update" /><br />
+        <textarea name="text" style="width: 100%; height: 40em;">{{.Text}}</textarea>
+    </form>
+</div>
+<script>
+// Replace the <textarea id="editor1"> with a CKEditor
+// instance, using default configuration.
+//CKEDITOR.replace( 'text' );
+vim.open({
+    debug   : true,
+    showMsg : function(msg){
+        alert('vim.js say:' + msg);
+    }
+});
+</script>
+</body>
+</html>

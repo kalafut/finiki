@@ -16,7 +16,7 @@ func (wiki *Wiki) Edit(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		page = &Page{Content: "Nothin'"}
 	}
 
-	t, err := template.New("edit").Parse(editTpl)
+	t, err := template.New("edit").Parse(loadTemplate("edit"))
 
 	template.Must(t, err).Execute(w, map[string]string{
 		"Path": "/edit" + path,
