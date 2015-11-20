@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -9,9 +10,14 @@ import (
 )
 
 const localConfigFile = ".finiki"
+const siteConfigFile = "site"
 
 type localConfig struct {
 	DataLocation string
+}
+
+type SiteConfig struct {
+	RecentPages []string
 }
 
 var defaultLocal = localConfig{
@@ -35,4 +41,16 @@ func readLocalCfg() localConfig {
 	}
 
 	return config
+}
+
+func readSiteCfg() SiteConfig {
+	var cfg SiteConfig
+
+	f, err := os.Open(filepath.Join(config.DataLocation, siteConfigFile))
+	if err == nil {
+		dec := json.NewDecoder(f)
+		dec.Decode(&cfg)
+	}
+
+	return cfg
 }

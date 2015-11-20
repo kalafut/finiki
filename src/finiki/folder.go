@@ -6,19 +6,12 @@ import (
 	"path/filepath"
 )
 
-const currentPage = "current"
-const PageInfoFilename = "pagefile"
-
 /*
 A Folder can contain either Folders or PageFolders
 */
 type Folder struct {
 	folders map[string]Folder
 	pages   map[string]*Page
-}
-
-type PageInfo struct {
-	CurrentRev int
 }
 
 var root Folder
@@ -34,7 +27,7 @@ func NewFolder(path string) Folder {
 	//base := filepath.Base(path)
 
 	// See if we're in a page folder or not
-	cf := join(path, currentPage)
+	cf := join(path, pageInfoFilename)
 	if _, err := os.Stat(cf); err != nil {
 		//page, err := readPageFolder(path)
 	} else {
@@ -77,7 +70,7 @@ func NewFolder(path string) Folder {
 }
 
 func readPageFolder(path string) (*Page, error) {
-	f, err := os.Open(join(path, currentPage))
+	f, err := os.Open(join(path, pageInfoFilename))
 	defer f.Close()
 
 	if err != nil {
@@ -88,7 +81,7 @@ func readPageFolder(path string) (*Page, error) {
 }
 
 func isPageFolder(path string) bool {
-	_, err := os.Stat(join(path, currentPage))
+	_, err := os.Stat(join(path, pageInfoFilename))
 
 	return err == nil
 }

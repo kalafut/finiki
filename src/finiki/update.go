@@ -11,7 +11,12 @@ func (wiki *Wiki) Update(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	path := ps.ByName("path")
 	r.ParseForm()
 
-	page := wiki.store.GetPage(path)
+	page, err := wiki.store.GetPage(path)
+
+	if err != nil {
+		page = &Page{}
+	}
+
 	newText := r.PostFormValue("text")
 	page.SetContent(newText)
 

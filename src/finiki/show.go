@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"net/http"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/russross/blackfriday"
@@ -10,8 +11,23 @@ import (
 
 // Show is the show endpoint of the Wiki
 func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	queryValues := r.URL.Query()
+	rev := queryValues.Get("rev")
+
 	path := ps.ByName("path")
-	page := wiki.store.GetPage(path)
+
+	var page *Page
+	var err error
+
+	if r, e := strconv.Atoi(rev); e == nil {
+		page, err = wiki.store.GetPageRev(path, r)
+	} else {
+		page, err = wiki.store.GetPage(path)
+	}
+
+	if err != nil {
+		page = &Page{Content: "Nothin'"}
+	}
 
 	vars := map[string]interface{}{
 		"Path": "/edit" + string(path),
