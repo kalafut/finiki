@@ -18,6 +18,7 @@ func main() {
 	router.GET("/show/*path", w.Show)
 	router.GET("/edit/*path", w.Edit)
 	router.POST("/edit/*path", w.Update)
+	router.ServeFiles("/static/*filepath", http.Dir("static/"))
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
