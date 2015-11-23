@@ -2,12 +2,6 @@
 	"version": 0,
 	"dependencies": [
 		{
-			"importpath": "github.com/julienschmidt/httprouter",
-			"repository": "https://github.com/julienschmidt/httprouter",
-			"revision": "77a895ad01ebc98a4dc95d8355bc825ce80a56f6",
-			"branch": "master"
-		},
-		{
 			"importpath": "github.com/naoina/go-stringutil",
 			"repository": "https://github.com/naoina/go-stringutil",
 			"revision": "6b638e95a32d0c1131db0e7fe83775cbea4a0d0b",

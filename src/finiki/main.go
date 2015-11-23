@@ -3,8 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-
-	"github.com/julienschmidt/httprouter"
 )
 
 var config = readLocalCfg()
@@ -14,11 +12,22 @@ func main() {
 	storage := NewFlatFileStorage(config.DataLocation)
 	w := NewWiki(storage)
 
-	router := httprouter.New()
-	router.GET("/show/*path", w.Show)
-	router.GET("/edit/*path", w.Edit)
-	router.POST("/edit/*path", w.Update)
-	router.ServeFiles("/static/*filepath", http.Dir("static/"))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.HandleFunc("/", w.Route)
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func (wiki *Wiki) Route(w http.ResponseWriter, r *http.Request) {
+	queryValues := r.URL.Query()
+	action := queryValues.Get("action")
+
+	switch {
+	case r.PostFormValue("update") == "update":
+		wiki.Update(w, r)
+	case action == "edit":
+		wiki.Edit(w, r)
+	default:
+		wiki.Show(w, r)
+	}
 }

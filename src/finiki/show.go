@@ -6,16 +6,16 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/russross/blackfriday"
 )
 
 // Show is the show endpoint of the Wiki
-func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 	queryValues := r.URL.Query()
 	rev := queryValues.Get("rev")
 
-	path := ps.ByName("path")
+	//path := ps.ByName("path")
+	path := r.URL.Path
 
 	var page *Page
 	var err error
@@ -32,7 +32,7 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 
 	parsedContent := preParse(page.Content)
 	vars := map[string]interface{}{
-		"Path": "/edit" + string(path),
+		"Path": path + "?action=edit",
 		"Text": BytesAsHTML(ParsedMarkdown(parsedContent)),
 	}
 
