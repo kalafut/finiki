@@ -1,3 +1,4 @@
+{{define "base"}}
 <html>
 	<head>
     <!-- Basic Page Needs –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -15,9 +16,8 @@
 
     <!-- Favicon –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="icon" type="image/png" href="images/favicon.png">	
+    {{template "head" .}}
     </head>
-	<body style="padding: 0.5em;">
-		<a href="{{.Path}}">Edit</a>
-		<div class="container" style="padding: 0em 1em; border: 1px solid #ccc;">{{.Text}}</div>
-	</body>
+    {{template "body" .}}
 </html>
+{{end}}

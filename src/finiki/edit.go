@@ -15,10 +15,13 @@ func (wiki *Wiki) Edit(w http.ResponseWriter, r *http.Request) {
 		page = &Page{Content: "Nothin'"}
 	}
 
-	t, err := template.New("edit").Parse(loadTemplate("edit"))
-
-	template.Must(t, err).Execute(w, map[string]string{
+	vars := map[string]string{
 		"Path": path,
 		"Text": page.Content,
-	})
+	}
+
+	tmpl := make(map[string]*template.Template)
+	tmpl["edit.html"] = template.Must(template.ParseFiles("templates/show_head.html", "templates/edit_body.html", "templates/base.html"))
+	tmpl["edit.html"].ExecuteTemplate(w, "base", vars)
+
 }

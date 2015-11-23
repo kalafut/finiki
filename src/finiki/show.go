@@ -36,8 +36,9 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 		"Text": BytesAsHTML(ParsedMarkdown(parsedContent)),
 	}
 
-	t := template.Must(template.New("show").Parse(loadTemplate("show")))
-	t.Execute(w, vars)
+	tmpl := make(map[string]*template.Template)
+	tmpl["show.html"] = template.Must(template.ParseFiles("templates/show_head.html", "templates/show_body.html", "templates/base.html"))
+	tmpl["show.html"].ExecuteTemplate(w, "base", vars)
 }
 
 // RedirectToShow redirects to the show endpoint using a HTTP 302
