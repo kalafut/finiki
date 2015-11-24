@@ -21,7 +21,7 @@ func (wiki *Wiki) Edit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl := make(map[string]*template.Template)
-	tmpl["edit.html"] = template.Must(template.ParseFiles("templates/show_head.html", "templates/edit_body.html", "templates/base.html"))
+	tmpl["edit.html"] = template.Must(template.ParseFiles("templates/edit.html", "templates/base.html"))
 	tmpl["edit.html"].ExecuteTemplate(w, "base", vars)
 
 }

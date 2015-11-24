@@ -37,7 +37,7 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl := make(map[string]*template.Template)
-	tmpl["show.html"] = template.Must(template.ParseFiles("templates/show_head.html", "templates/show_body.html", "templates/base.html"))
+	tmpl["show.html"] = template.Must(template.ParseFiles("templates/show.html", "templates/base.html"))
 	tmpl["show.html"].ExecuteTemplate(w, "base", vars)
 }
 
