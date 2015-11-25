@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -26,9 +27,16 @@ func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	}
 
 	parsedContent := preParse(page.Content)
+	paths := wiki.store.DirList(path)
+	fmt.Println(paths)
+
+	// TODO put this back when Path type is sorted
+	//sort.Sort(DirEntries(paths))
+
 	vars := map[string]interface{}{
-		"Path": path + "?action=edit",
-		"Text": BytesAsHTML(ParsedMarkdown(parsedContent)),
+		"Path":  path + "?action=edit",
+		"Text":  BytesAsHTML(ParsedMarkdown(parsedContent)),
+		"Paths": paths,
 	}
 
 	tmpl := make(map[string]*template.Template)

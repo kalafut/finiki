@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -117,6 +118,28 @@ func (p *PageInfo) Save() error {
 	enc.Encode(p)
 
 	return nil
+}
+
+func (s *FlatFileStorage) DirList(path string) []string {
+	list := []string{}
+
+	filename := filepath.Join(s.root, path)
+	f, err := os.Open(filename)
+	defer f.Close()
+
+	entries, err := f.Readdir(0)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, fi := range entries {
+		if !fi.IsDir() { // should always be false
+			continue
+		}
+		list = append(list, fi.Name())
+	}
+
+	return list
 }
 
 func revToFile(rev int) string {

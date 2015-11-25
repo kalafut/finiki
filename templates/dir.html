@@ -2,6 +2,12 @@
 
 {{define "body"}}
 <body style="padding: 0.5em;">
-YAY!
+{{range .Paths}}
+{{if false}}
+  <div><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span> {{.}}</div>
+  {{else}}
+  <div><a href="{{.}}">{{.}}</a></div>
+  {{end}}
+{{end}}
 </body>
 {{end}}
