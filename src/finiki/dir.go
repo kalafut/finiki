@@ -1,41 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
-	"strconv"
+	"sort"
 )
 
 func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
-
-	queryValues := r.URL.Query()
-	rev := queryValues.Get("rev")
-
-	var page *Page
-	var err error
-
-	if r, e := strconv.Atoi(rev); e == nil {
-		page, err = wiki.store.GetPageRev(path, r)
-	} else {
-		page, err = wiki.store.GetPage(path)
-	}
-
-	if err != nil {
-		page = &Page{Content: "Nothin'"}
-	}
-
-	parsedContent := preParse(page.Content)
-	paths := wiki.store.DirList(path)
-	fmt.Println(paths)
+	paths := wiki.store.DirList(Path(path))
 
 	// TODO put this back when Path type is sorted
-	//sort.Sort(DirEntries(paths))
+	sort.Sort(paths)
 
 	vars := map[string]interface{}{
 		"Path":  path + "?action=edit",
-		"Text":  BytesAsHTML(ParsedMarkdown(parsedContent)),
 		"Paths": paths,
 	}
 

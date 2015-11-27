@@ -21,9 +21,9 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	if r, e := strconv.Atoi(rev); e == nil {
-		page, err = wiki.store.GetPageRev(path, r)
+		page, err = wiki.store.GetPageRev(Path(path), r)
 	} else {
-		page, err = wiki.store.GetPage(path)
+		page, err = wiki.store.GetPage(Path(path))
 	}
 
 	if err != nil {

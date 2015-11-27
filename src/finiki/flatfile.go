@@ -28,8 +28,8 @@ func NewFlatFileStorage(root string) *FlatFileStorage {
 
 // GetPageRev returns the Page at path for a given rev. An error
 // is returned if the page or requested rev is not found.
-func (s *FlatFileStorage) GetPageRev(path string, rev int) (*Page, error) {
-	revPath := filepath.Join(s.root, path, "revs", revToFile(rev))
+func (s *FlatFileStorage) GetPageRev(path Path, rev int) (*Page, error) {
+	revPath := filepath.Join(s.root, string(path), "revs", revToFile(rev))
 
 	f, err := os.Open(revPath)
 	if err != nil {
@@ -45,7 +45,7 @@ func (s *FlatFileStorage) GetPageRev(path string, rev int) (*Page, error) {
 }
 
 // GetPage returns the most recent rev of the Page at path
-func (s *FlatFileStorage) GetPage(path string) (*Page, error) {
+func (s *FlatFileStorage) GetPage(path Path) (*Page, error) {
 	pageInfo, err := s.NewPageInfo(path)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (s *FlatFileStorage) GetPage(path string) (*Page, error) {
 	return s.GetPageRev(path, pageInfo.CurrentRev)
 }
 
-func (s *FlatFileStorage) PutPage(path string, page *Page) error {
+func (s *FlatFileStorage) PutPage(path Path, page *Page) error {
 	pageInfo, err := s.NewPageInfo(path)
 	if err != nil {
 		return err
@@ -62,9 +62,9 @@ func (s *FlatFileStorage) PutPage(path string, page *Page) error {
 	pageInfo.CurrentRev++
 	pageInfo.Save()
 
-	os.MkdirAll(filepath.Join(s.root, path, "revs"), 0755)
+	os.MkdirAll(filepath.Join(s.root, string(path), "revs"), 0755)
 
-	fullpath := filepath.Join(s.root, path, "revs", revToFile(pageInfo.CurrentRev))
+	fullpath := filepath.Join(s.root, string(path), "revs", revToFile(pageInfo.CurrentRev))
 
 	f, err := os.Create(fullpath)
 	defer f.Close()
@@ -77,10 +77,10 @@ func (s *FlatFileStorage) PutPage(path string, page *Page) error {
 }
 
 // NewPageInfo reads or a PageInfo file
-func (s *FlatFileStorage) NewPageInfo(path string) (*PageInfo, error) {
+func (s *FlatFileStorage) NewPageInfo(path Path) (*PageInfo, error) {
 	var pInfo PageInfo
 
-	pInfo.filename = filepath.Join(s.root, path, pageInfoFilename)
+	pInfo.filename = filepath.Join(s.root, string(path), pageInfoFilename)
 	pInfo.CurrentRev = -1
 
 	f, err := os.Open(pInfo.filename)
@@ -120,10 +120,10 @@ func (p *PageInfo) Save() error {
 	return nil
 }
 
-func (s *FlatFileStorage) DirList(path string) []string {
-	list := []string{}
+func (s *FlatFileStorage) DirList(path Path) PathList {
+	list := PathList{}
 
-	filename := filepath.Join(s.root, path)
+	filename := filepath.Join(s.root, string(path))
 	f, err := os.Open(filename)
 	defer f.Close()
 
@@ -136,7 +136,16 @@ func (s *FlatFileStorage) DirList(path string) []string {
 		if !fi.IsDir() { // should always be false
 			continue
 		}
-		list = append(list, fi.Name())
+		pi := filepath.Join(s.root, string(path), fi.Name(), pageInfoFilename)
+
+		f, err := os.Open(pi)
+		defer f.Close()
+
+		if os.IsNotExist(err) {
+			list = append(list, Path(fi.Name()+"/"))
+		} else {
+			list = append(list, Path(fi.Name()))
+		}
 	}
 
 	return list

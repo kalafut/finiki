@@ -3,7 +3,7 @@
 {{define "body"}}
 <body style="padding: 0.5em;">
 {{range .Paths}}
-{{if false}}
+  {{if .IsDir}}
   <div><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span> {{.}}</div>
   {{else}}
   <div><a href="{{.}}">{{.}}</a></div>

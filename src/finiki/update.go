@@ -7,7 +7,7 @@ func (wiki *Wiki) Update(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	r.ParseForm()
 
-	page, err := wiki.store.GetPage(path)
+	page, err := wiki.store.GetPage(Path(path))
 
 	if err != nil {
 		page = &Page{}
@@ -16,7 +16,7 @@ func (wiki *Wiki) Update(w http.ResponseWriter, r *http.Request) {
 	newText := r.PostFormValue("text")
 	page.SetContent(newText)
 
-	wiki.store.PutPage(path, page)
+	wiki.store.PutPage(Path(path), page)
 
 	http.Redirect(w, r, path, 302)
 }

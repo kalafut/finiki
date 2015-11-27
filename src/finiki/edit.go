@@ -9,7 +9,7 @@ import (
 func (wiki *Wiki) Edit(w http.ResponseWriter, r *http.Request) {
 	//path := ps.ByName("path")
 	path := r.URL.Path
-	page, err := wiki.store.GetPage(path)
+	page, err := wiki.store.GetPage(Path(path))
 
 	if err != nil {
 		page = &Page{Content: "Nothin'"}
