@@ -1,13 +1,12 @@
 package main
 
 import (
-	"bytes"
 	"testing"
-	"time"
 
 	"gopkg.in/tylerb/is.v1"
 )
 
+/*
 func TestPageString(t *testing.T) {
 	is := is.New(t)
 
@@ -44,6 +43,7 @@ func TestNewPage(t *testing.T) {
 	is.NotErr(err)
 	is.Equal(p1, *p2)
 }
+*/
 
 func TestParseString(t *testing.T) {
 	is := is.New(t)
