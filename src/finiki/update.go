@@ -7,7 +7,7 @@ func (wiki *Wiki) Update(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	r.ParseForm()
 
-	page, err := wiki.store.GetPage(Path(path))
+	page, err := wiki.store.GetPage(Path(path), CurrentRev)
 
 	if err != nil {
 		page = &Page{}

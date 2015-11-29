@@ -26,12 +26,21 @@ func NewFlatFileStorage(root string) *FlatFileStorage {
 	}
 }
 
-// GetPageRev returns the Page at path for a given rev. An error
-// is returned if the page or requested rev is not found.
-func (s *FlatFileStorage) GetPageRev(path Path, rev int) (*Page, error) {
+// GetPage returns the Page at path for a given rev. Use CurrentRev to request the latest version.
+// An error is returned if the page or requested rev is not found.
+func (s *FlatFileStorage) GetPage(path Path, rev int) (*Page, error) {
+	if rev == CurrentRev {
+		pageInfo, err := s.NewPageInfo(path)
+		if err != nil {
+			return nil, err
+		}
+		rev = pageInfo.CurrentRev
+	}
+
 	revPath := filepath.Join(s.root, string(path), "revs", revToFile(rev))
 
 	f, err := os.Open(revPath)
+
 	if err != nil {
 		return nil, ErrPageNotFound
 	}
@@ -44,17 +53,21 @@ func (s *FlatFileStorage) GetPageRev(path Path, rev int) (*Page, error) {
 	return nil, ErrPageCorrupt
 }
 
-// GetPage returns the most recent rev of the Page at path
-func (s *FlatFileStorage) GetPage(path Path) (*Page, error) {
-	pageInfo, err := s.NewPageInfo(path)
-	if err != nil {
-		return nil, err
+func (s *FlatFileStorage) PutPage(path Path, page *Page) error {
+	// Check whether a folder is already at this location
+	folder := filepath.Join(s.root, string(path))
+	pi := filepath.Join(folder, pageInfoFilename)
+
+	f1, err := os.Open(folder)
+	defer f1.Close()
+	if err == nil {
+		f2, err := os.Open(pi)
+		defer f2.Close()
+		if os.IsNotExist(err) {
+			return ErrFolderExists
+		}
 	}
 
-	return s.GetPageRev(path, pageInfo.CurrentRev)
-}
-
-func (s *FlatFileStorage) PutPage(path Path, page *Page) error {
 	pageInfo, err := s.NewPageInfo(path)
 	if err != nil {
 		return err

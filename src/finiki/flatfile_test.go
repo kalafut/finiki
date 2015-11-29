@@ -1,9 +1,15 @@
 package finiki
 
-import "testing"
+import (
+	"io/ioutil"
+	"os"
+	"testing"
+)
 
 func TestInterface(t *testing.T) {
-	s := NewFlatFileStorage("/tmp")
+	dir, _ := ioutil.TempDir("", "")
+	s := NewFlatFileStorage(dir)
 
-	testGetPage(t, s)
+	testStorage(t, s)
+	os.RemoveAll(dir)
 }

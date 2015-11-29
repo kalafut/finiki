@@ -19,12 +19,12 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 
 	var page *Page
 	var err error
+	rev_rqst := CurrentRev
 
 	if r, e := strconv.Atoi(rev); e == nil {
-		page, err = wiki.store.GetPageRev(Path(path), r)
-	} else {
-		page, err = wiki.store.GetPage(Path(path))
+		rev_rqst = r
 	}
+	page, err = wiki.store.GetPage(Path(path), rev_rqst)
 
 	if err != nil {
 		page = &Page{Content: "Nothin'"}
