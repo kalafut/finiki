@@ -1,4 +1,4 @@
-package main
+package finiki
 
 import (
 	"encoding/json"
@@ -24,7 +24,7 @@ var defaultLocal = localConfig{
 	DataLocation: "sample",
 }
 
-func readLocalCfg() localConfig {
+func ReadLocalCfg() localConfig {
 	var config = defaultLocal
 
 	user, err := user.Current()
@@ -43,10 +43,10 @@ func readLocalCfg() localConfig {
 	return config
 }
 
-func readSiteCfg() SiteConfig {
+func ReadSiteCfg(dataLocation string) SiteConfig {
 	var cfg SiteConfig
 
-	f, err := os.Open(filepath.Join(config.DataLocation, siteConfigFile))
+	f, err := os.Open(filepath.Join(dataLocation, siteConfigFile))
 	if err == nil {
 		dec := json.NewDecoder(f)
 		dec.Decode(&cfg)
