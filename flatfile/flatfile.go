@@ -170,7 +170,10 @@ func (s *FlatFileStorage) GetPageList(root string) []string {
 	pages := []string{}
 
 	filepath.Walk(s.root, func(path string, info os.FileInfo, err error) error {
-		println(path) // normalize slashes!
+		if filepath.Base(path) == pageInfoFilename {
+			pages = append(pages, filepath.ToSlash(filepath.Dir(path))[len(s.root):])
+			return filepath.SkipDir
+		}
 		return nil
 	})
 
