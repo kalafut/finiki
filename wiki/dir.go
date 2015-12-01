@@ -12,6 +12,7 @@ func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	paths := wiki.store.DirList(core.Path(path))
 
+	wiki.store.GetPageList("")
 	// TODO put this back when Path type is sorted
 	sort.Sort(paths)
 

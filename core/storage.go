@@ -31,6 +31,7 @@ type Storage interface {
 	GetPage(path Path, rev int) (*Page, error)
 	PutPage(path Path, page *Page) error
 	DirList(path Path) PathList
+	GetPageList(root string) []string
 }
 
 /*

@@ -166,6 +166,17 @@ func (s *FlatFileStorage) DirList(path core.Path) core.PathList {
 	return list
 }
 
+func (s *FlatFileStorage) GetPageList(root string) []string {
+	pages := []string{}
+
+	filepath.Walk(s.root, func(path string, info os.FileInfo, err error) error {
+		println(path) // normalize slashes!
+		return nil
+	})
+
+	return pages
+}
+
 func revToFile(rev int) string {
 	return fmt.Sprintf("%08d", rev)
 }
