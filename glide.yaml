@@ -1,0 +1,6 @@
+package: github.com/kalafut/finiki
+import:
+  - package: github.com/russross/blackfriday
+  - package: github.com/shurcooL/sanitized_anchor_name
+  - package: github.com/naoina/toml
+  - package: github.com/naoina/go-stringutil
