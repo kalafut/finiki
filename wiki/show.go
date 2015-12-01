@@ -25,7 +25,7 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 	if r, e := strconv.Atoi(rev); e == nil {
 		rev_rqst = r
 	}
-	page, err = wiki.store.GetPage(core.Path(path), rev_rqst)
+	page, err = wiki.store.GetPage(path, rev_rqst)
 
 	if err != nil {
 		page = &core.Page{Content: "Nothin'"}

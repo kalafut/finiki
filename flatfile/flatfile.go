@@ -30,7 +30,7 @@ func NewFlatFileStorage(root string) *FlatFileStorage {
 
 // GetPage returns the Page at path for a given rev. Use CurrentRev to request the latest version.
 // An error is returned if the page or requested rev is not found.
-func (s *FlatFileStorage) GetPage(path core.Path, rev int) (*core.Page, error) {
+func (s *FlatFileStorage) GetPage(path string, rev int) (*core.Page, error) {
 	if rev == core.CurrentRev {
 		pageInfo, err := s.NewPageInfo(path)
 		if err != nil {
@@ -55,7 +55,7 @@ func (s *FlatFileStorage) GetPage(path core.Path, rev int) (*core.Page, error) {
 	return nil, core.ErrPageCorrupt
 }
 
-func (s *FlatFileStorage) PutPage(path core.Path, page *core.Page) error {
+func (s *FlatFileStorage) PutPage(path string, page *core.Page) error {
 	// Check whether a folder is already at this location
 	folder := filepath.Join(s.root, string(path))
 	pi := filepath.Join(folder, pageInfoFilename)
@@ -92,7 +92,7 @@ func (s *FlatFileStorage) PutPage(path core.Path, page *core.Page) error {
 }
 
 // NewPageInfo reads or a PageInfo file
-func (s *FlatFileStorage) NewPageInfo(path core.Path) (*PageInfo, error) {
+func (s *FlatFileStorage) NewPageInfo(path string) (*PageInfo, error) {
 	var pInfo PageInfo
 
 	pInfo.filename = filepath.Join(s.root, string(path), pageInfoFilename)
@@ -135,8 +135,8 @@ func (p *PageInfo) Save() error {
 	return nil
 }
 
-func (s *FlatFileStorage) DirList(path core.Path) core.PathList {
-	list := core.PathList{}
+func (s *FlatFileStorage) DirList(path string) []string {
+	list := []string{}
 
 	filename := filepath.Join(s.root, string(path))
 	f, err := os.Open(filename)
@@ -157,9 +157,9 @@ func (s *FlatFileStorage) DirList(path core.Path) core.PathList {
 		defer f.Close()
 
 		if os.IsNotExist(err) {
-			list = append(list, core.Path(fi.Name()+"/"))
+			list = append(list, fi.Name()+"/")
 		} else {
-			list = append(list, core.Path(fi.Name()))
+			list = append(list, fi.Name())
 		}
 	}
 

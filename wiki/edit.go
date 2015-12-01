@@ -11,7 +11,7 @@ import (
 func (wiki *Wiki) Edit(w http.ResponseWriter, r *http.Request) {
 	//path := ps.ByName("path")
 	path := r.URL.Path
-	page, err := wiki.store.GetPage(core.Path(path), core.CurrentRev)
+	page, err := wiki.store.GetPage(path, core.CurrentRev)
 
 	if err != nil {
 		page = &core.Page{Content: "Nothin'"}

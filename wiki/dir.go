@@ -3,18 +3,15 @@ package wiki
 import (
 	"html/template"
 	"net/http"
-	"sort"
-
-	"github.com/kalafut/finiki/core"
 )
 
 func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
-	paths := wiki.store.DirList(core.Path(path))
+	paths := wiki.store.DirList(path)
 
 	wiki.store.GetPageList("")
 	// TODO put this back when Path type is sorted
-	sort.Sort(paths)
+	//sort.Sort(paths)
 
 	vars := map[string]interface{}{
 		"Path":  path + "?action=edit",

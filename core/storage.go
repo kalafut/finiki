@@ -1,9 +1,6 @@
 package core
 
-import (
-	"errors"
-	"strings"
-)
+import "errors"
 
 const CurrentRev = -1
 
@@ -28,9 +25,9 @@ ErrExists is returned.
 
 */
 type Storage interface {
-	GetPage(path Path, rev int) (*Page, error)
-	PutPage(path Path, page *Page) error
-	DirList(path Path) PathList
+	GetPage(path string, rev int) (*Page, error)
+	PutPage(path string, page *Page) error
+	DirList(path string) []string
 	GetPageList(root string) []string
 }
 
@@ -46,27 +43,27 @@ Path is valid wiki path. Paths conform to the following spec:
 	/a/c/d/folder
 
 */
-type Path string
+//type Path string
 
-func (p Path) IsDir() bool {
-	return strings.HasSuffix(string(p), "/")
-}
-
-type PathList []Path
-
-// Sort support
-func (d PathList) Len() int {
-	return len(d)
-}
-
-func (d PathList) Less(i, j int) bool {
-	if d[i].IsDir() == d[j].IsDir() {
-		return d[i] < d[j]
-	} else {
-		return d[i].IsDir()
-	}
-}
-
-func (d PathList) Swap(i, j int) {
-	d[i], d[j] = d[j], d[i]
-}
+//func (p Path) IsDir() bool {
+//	return strings.HasSuffix(string(p), "/")
+//}
+//
+//type PathList []Path
+//
+//// Sort support
+//func (d PathList) Len() int {
+//	return len(d)
+//}
+//
+//func (d PathList) Less(i, j int) bool {
+//	if d[i].IsDir() == d[j].IsDir() {
+//		return d[i] < d[j]
+//	} else {
+//		return d[i].IsDir()
+//	}
+//}
+//
+//func (d PathList) Swap(i, j int) {
+//	d[i], d[j] = d[j], d[i]
+//}
