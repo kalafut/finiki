@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/kalafut/finiki/core"
-	"github.com/russross/blackfriday"
 )
 
 // Show is the show endpoint of the Wiki
@@ -48,16 +47,6 @@ func (w *Wiki) RedirectToShow(c web.C, rw http.ResponseWriter, r *http.Request) 
 	http.Redirect(rw, r, "/"+c.URLParams["name"], 302)
 }
 */
-
-// BytesAsHTML returns the template bytes as HTML
-func BytesAsHTML(b []byte) template.HTML {
-	return template.HTML(string(b))
-}
-
-// ParsedMarkdown returns provided bytes parsed as Markdown
-func ParsedMarkdown(b string) []byte {
-	return blackfriday.MarkdownCommon([]byte(b))
-}
 
 var reLink = regexp.MustCompile(`\[\[(.*?)\]\]`)
 
