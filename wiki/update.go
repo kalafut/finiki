@@ -18,9 +18,11 @@ func (wiki *Wiki) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newText := r.PostFormValue("text")
-	page.SetContent(newText)
+	if newText != page.Content {
+		page.SetContent(newText)
 
-	wiki.store.PutPage(path, page)
+		wiki.store.PutPage(path, page)
+	}
 
 	http.Redirect(w, r, path, 302)
 }
