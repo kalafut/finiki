@@ -5,8 +5,12 @@
 <body style="padding: 0.5em;">
 <div class="container">
     <form action="{{.Path}}" method="POST">
-        <input class="btn btn-default" type="submit" value="update" name="update"/><br/>
-        <textarea name="text" style="width: 100%; height: 40em;">{{.Text}}</textarea>
+        <div class="row">
+            <input class="btn btn-default" type="submit" value="update" name="update"/><br/>
+        </div>
+        <div class="row">
+            <textarea name="text" class="col-md-offset-2 col-md-8" style="height: 40em;">{{.Text}}</textarea>
+        </div>
     </form>
 </div>
 <script>
