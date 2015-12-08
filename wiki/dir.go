@@ -4,19 +4,23 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+
+	"github.com/kalafut/finiki/core"
 )
 
 func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
-	paths := wiki.store.DirList(path)
+	//paths := wiki.store.DirList(path)
 
 	fmt.Println(wiki.store.GetPageList(""))
+	d, p := core.PagelistProc(path, wiki.store.GetPageList("/"))
 	// TODO put this back when Path type is sorted
 	//sort.Sort(paths)
 
 	vars := map[string]interface{}{
 		"Path":  path + "?action=edit",
-		"Paths": paths,
+		"Dirs":  d,
+		"Pages": p,
 	}
 
 	tmpl := make(map[string]*template.Template)

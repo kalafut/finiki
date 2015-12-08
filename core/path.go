@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var pathRe = regexp.MustCompile(`^/([[:alnum:]]+/)*([[:alnum:]]+)?$`)
+
 func PathSplit(path string) (dir, page string) {
 	if !PathValid(path) {
 		return
@@ -20,26 +22,14 @@ func PathSplit(path string) (dir, page string) {
 	return
 }
 
-var pathRe = regexp.MustCompile(`^/([[:alnum:]]+/)*([[:alnum:]]+)?$`)
-
 func PathValid(path string) bool {
 	return pathRe.MatchString(path)
-	/*
-		valid := false
-
-		switch {
-		case len(path) == 0:
-		case path[0] != '/':
-			case
-		default:
-			valid = true
-		}
-
-		return valid
-	*/
 }
 
-func pagelistProc(root string, pagelist []string) ([]string, []string) {
+// Given a root directory and a slice of pages, pagelistProc will
+// return a slice of directories and pages that are immediate children
+// of root.
+func PagelistProc(root string, pagelist []string) ([]string, []string) {
 	dirs := []string{}
 	pages := []string{}
 

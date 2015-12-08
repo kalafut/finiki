@@ -69,7 +69,7 @@ func TestPagelistProc(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		dirs, pages := pagelistProc(test.root, test.pages)
+		dirs, pages := PagelistProc(test.root, test.pages)
 		is.Equal(test.expDirs, dirs)
 		is.Equal(test.expPages, pages)
 	}

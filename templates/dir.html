@@ -2,12 +2,11 @@
 
 {{define "body"}}
 <body style="padding: 0.5em;">
-{{range .Paths}}
-  {{if .IsDir}}
+{{range .Dirs}}
   <div><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span> {{.}}</div>
-  {{else}}
+{{end}}
+{{range .Pages}}
   <div><a href="{{.}}">{{.}}</a></div>
-  {{end}}
 {{end}}
 </body>
 {{end}}
