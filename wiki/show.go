@@ -32,12 +32,13 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 
 	parsedContent := preParse(page.Content)
 	vars := map[string]interface{}{
-		"Path": path + "?action=edit",
-		"Text": BytesAsHTML(ParsedMarkdown(parsedContent)),
+		"Path":  path + "?action=edit",
+		"Text":  BytesAsHTML(ParsedMarkdown(parsedContent)),
+		"Title": path[1:],
 	}
 
 	tmpl := make(map[string]*template.Template)
-	tmpl["show.html"] = template.Must(template.ParseFiles("templates/show.html", "templates/base.html"))
+	tmpl["show.html"] = template.Must(template.ParseFiles("templates/header.html", "templates/show.html", "templates/base.html"))
 	tmpl["show.html"].ExecuteTemplate(w, "base", vars)
 }
 

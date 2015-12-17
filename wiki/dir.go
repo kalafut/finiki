@@ -1,7 +1,6 @@
 package wiki
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 
@@ -12,7 +11,6 @@ func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	//paths := wiki.store.DirList(path)
 
-	fmt.Println(wiki.store.GetPageList(""))
 	d, p := core.PagelistProc(path, wiki.store.GetPageList("/"))
 	// TODO put this back when Path type is sorted
 	//sort.Sort(paths)
