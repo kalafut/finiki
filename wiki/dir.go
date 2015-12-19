@@ -22,7 +22,7 @@ func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl := make(map[string]*template.Template)
-	tmpl["dir.html"] = template.Must(template.ParseFiles("templates/dir.html", "templates/base.html"))
+	tmpl["dir.html"] = template.Must(template.ParseFiles("templates/header.html", "templates/dir.html", "templates/base.html"))
 	tmpl["dir.html"].ExecuteTemplate(w, "base", vars)
 }
 
