@@ -1,19 +1,17 @@
-package wiki
+package main
 
 import (
 	"net/http"
 	"strings"
-
-	"github.com/kalafut/finiki/core"
 )
 
 // Wiki represents the entire Wiki, contains the db
 type Wiki struct {
-	store core.Storage
+	store Storage
 }
 
 // NewWiki creates a new Wiki
-func NewWiki(s core.Storage) *Wiki {
+func NewWiki(s Storage) *Wiki {
 	// Setup the wiki.
 	w := &Wiki{store: s}
 
@@ -21,7 +19,7 @@ func NewWiki(s core.Storage) *Wiki {
 }
 
 // DB returns the database associated with the handler.
-func (w *Wiki) Store() core.Storage {
+func (w *Wiki) Store() Storage {
 	return w.store
 }
 

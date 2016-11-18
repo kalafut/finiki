@@ -1,20 +1,18 @@
-package wiki
+package main
 
 import (
 	"net/http"
 	"text/template"
-
-	"github.com/kalafut/finiki/core"
 )
 
 // Edit is the edit endpoint of the Wiki
 func (wiki *Wiki) Edit(w http.ResponseWriter, r *http.Request) {
 	//path := ps.ByName("path")
 	path := r.URL.Path
-	page, err := wiki.store.GetPage(path, core.CurrentRev)
+	page, err := wiki.store.GetPage(path, CurrentRev)
 
 	if err != nil {
-		page = &core.Page{Content: "Nothin'"}
+		page = &Page{Content: "Nothin'"}
 	}
 
 	vars := map[string]string{

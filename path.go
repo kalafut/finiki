@@ -1,4 +1,4 @@
-package core
+package main
 
 import (
 	"regexp"
@@ -34,7 +34,6 @@ func PagelistProc(root string, pagelist []string) ([]string, []string) {
 	pages := []string{}
 
 	rootLen := len(strings.Split(root, "/")) - 1
-	println(rootLen)
 
 	for _, page := range pagelist {
 		if !strings.HasPrefix(page, root) {

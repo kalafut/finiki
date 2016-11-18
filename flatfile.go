@@ -1,4 +1,4 @@
-package flatfile
+package main
 
 import (
 	"encoding/json"
@@ -7,8 +7,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-
-	"github.com/kalafut/finiki/core"
 )
 
 const pageInfoFilename = "pageinfo"
@@ -30,8 +28,8 @@ func NewFlatFileStorage(root string) *FlatFileStorage {
 
 // GetPage returns the Page at path for a given rev. Use CurrentRev to request the latest version.
 // An error is returned if the page or requested rev is not found.
-func (s *FlatFileStorage) GetPage(path string, rev int) (*core.Page, error) {
-	if rev == core.CurrentRev {
+func (s *FlatFileStorage) GetPage(path string, rev int) (*Page, error) {
+	if rev == CurrentRev {
 		pageInfo, err := s.NewPageInfo(path)
 		if err != nil {
 			return nil, err
@@ -44,18 +42,18 @@ func (s *FlatFileStorage) GetPage(path string, rev int) (*core.Page, error) {
 	f, err := os.Open(revPath)
 
 	if err != nil {
-		return nil, core.ErrPageNotFound
+		return nil, ErrPageNotFound
 	}
 
-	page, err := core.DecodePage(f)
+	page, err := DecodePage(f)
 	if err == nil {
 		return page, nil
 	}
 
-	return nil, core.ErrPageCorrupt
+	return nil, ErrPageCorrupt
 }
 
-func (s *FlatFileStorage) PutPage(path string, page *core.Page) error {
+func (s *FlatFileStorage) PutPage(path string, page *Page) error {
 	// Check whether a folder is already at this location
 	folder := filepath.Join(s.root, string(path))
 	pi := filepath.Join(folder, pageInfoFilename)
@@ -66,7 +64,7 @@ func (s *FlatFileStorage) PutPage(path string, page *core.Page) error {
 		f2, err := os.Open(pi)
 		defer f2.Close()
 		if os.IsNotExist(err) {
-			return core.ErrFolderExists
+			return ErrFolderExists
 		}
 	}
 
@@ -111,7 +109,7 @@ func (s *FlatFileStorage) NewPageInfo(path string) (*PageInfo, error) {
 	err = dec.Decode(&pInfo)
 
 	if err != nil {
-		return nil, core.ErrPageCorrupt
+		return nil, ErrPageCorrupt
 	} else {
 		return &pInfo, nil
 	}

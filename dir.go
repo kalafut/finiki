@@ -1,17 +1,15 @@
-package wiki
+package main
 
 import (
 	"html/template"
 	"net/http"
-
-	"github.com/kalafut/finiki/core"
 )
 
 func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	//paths := wiki.store.DirList(path)
 
-	d, p := core.PagelistProc(path, wiki.store.GetPageList("/"))
+	d, p := PagelistProc(path, wiki.store.GetPageList("/"))
 	// TODO put this back when Path type is sorted
 	//sort.Sort(paths)
 

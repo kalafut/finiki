@@ -1,12 +1,10 @@
-package wiki
+package main
 
 import (
 	"html/template"
 	"net/http"
 	"regexp"
 	"strconv"
-
-	"github.com/kalafut/finiki/core"
 )
 
 // Show is the show endpoint of the Wiki
@@ -17,9 +15,9 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 	//path := ps.ByName("path")
 	path := r.URL.Path
 
-	var page *core.Page
+	var page *Page
 	var err error
-	rev_rqst := core.CurrentRev
+	rev_rqst := CurrentRev
 
 	if r, e := strconv.Atoi(rev); e == nil {
 		rev_rqst = r
@@ -27,7 +25,7 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 	page, err = wiki.store.GetPage(path, rev_rqst)
 
 	if err != nil {
-		page = &core.Page{Content: "Nothin'"}
+		page = &Page{Content: "Nothin'"}
 	}
 
 	parsedContent := preParse(page.Content)

@@ -1,12 +1,20 @@
-// Tests for validating an implementation of Storage.
-
-package core
+package main
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"gopkg.in/tylerb/is.v1"
 )
+
+func TestInterface(t *testing.T) {
+	dir, _ := ioutil.TempDir("", "")
+	s := NewFlatFileStorage(dir)
+
+	testStorage(t, s)
+	os.RemoveAll(dir)
+}
 
 func testStorage(t *testing.T, s Storage) {
 	testGetPage(t, s)
