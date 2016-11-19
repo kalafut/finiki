@@ -6,16 +6,18 @@ import (
 	"net/http"
 )
 
+const PORT = "8080"
+
 var config = ReadLocalCfg()
 var siteConfig = ReadSiteCfg(config.DataLocation)
 
 func main() {
-	storage := NewFlatFileStorage(config.DataLocation)
+	storage := NewSimpleFileStorage(config.DataLocation)
 	w := NewWiki(storage)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", w.Route)
 
-	fmt.Println("Starting finiki server...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println("Starting finiki server on port " + PORT + "...")
+	log.Fatal(http.ListenAndServe(":"+PORT, nil))
 }
