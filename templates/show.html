@@ -2,13 +2,8 @@
 {{define "body"}}
 <body style="padding: 0.5em;">
 {{template "header" .}}
-<div class="container">
-    <div class="row">
-        <a href="{{.Path}}" class="btn btn-default" role="button">Edit</a>
-    </div>
-    <div class="row">
-        <div class="col-md-12" style="padding: 0em 1em; border: 1px solid #ccc;">{{.Text}}</div>
-    </div>
-</div>
+{{.Text}}
+<a href="{{.Path}}" class="pure-button">Edit</a>
+<a href="{{.Path}}/rename" class="pure-button">Rename</a>
 </body>
 {{end}}
