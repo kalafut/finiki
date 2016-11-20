@@ -2,7 +2,6 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -71,16 +70,14 @@ func fList(root string, dir bool) []string {
 
 	entries, err := ioutil.ReadDir(root)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	if err == nil {
+		for _, fi := range entries {
+			if (dir != fi.IsDir()) || strings.HasPrefix(fi.Name(), ".") {
+				continue
+			}
 
-	for _, fi := range entries {
-		if (dir != fi.IsDir()) || strings.HasPrefix(fi.Name(), ".") {
-			continue
+			list = append(list, fi.Name())
 		}
-
-		list = append(list, fi.Name())
 	}
 
 	return list

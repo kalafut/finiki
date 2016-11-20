@@ -1,9 +1,6 @@
 package main
 
-import (
-	"net/http"
-	"strings"
-)
+import "net/http"
 
 // Wiki represents the entire Wiki, contains the db
 type Wiki struct {
@@ -33,9 +30,11 @@ func (wiki Wiki) Route(w http.ResponseWriter, r *http.Request) {
 		wiki.Update(w, r)
 	case action == "edit":
 		wiki.Edit(w, r)
-	case strings.HasSuffix(path, "/"):
-		wiki.Dir(w, r)
 	default:
-		wiki.Show(w, r)
+		if len(wiki.store.GetPageList(path)) > 0 || len(wiki.store.DirList(path)) > 0 {
+			wiki.Dir(w, r)
+		} else {
+			wiki.Show(w, r)
+		}
 	}
 }
