@@ -7,16 +7,17 @@ import (
 
 func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
-	//paths := wiki.store.DirList(path)
 
-	d, p := PagelistProc(path, wiki.store.GetPageList("/"))
+	dirs := wiki.store.DirList(path)
+	pages := wiki.store.GetPageList(path)
+
 	// TODO put this back when Path type is sorted
 	//sort.Sort(paths)
 
 	vars := map[string]interface{}{
 		"Path":  path + "?action=edit",
-		"Dirs":  d,
-		"Pages": p,
+		"Dirs":  dirs,
+		"Pages": pages,
 	}
 
 	tmpl := make(map[string]*template.Template)

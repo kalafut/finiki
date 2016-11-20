@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 //const pageInfoFilename = "pageinfo"
@@ -49,15 +49,26 @@ func (s *SimpleFileStorage) PutPage(path string, page *Page) error {
 
 	if err == nil {
 		f.WriteString(page.Content)
+	} else {
+		return ErrFolderExists
 	}
 
 	return nil
 }
 
 func (s *SimpleFileStorage) DirList(path string) []string {
+	root := filepath.Join(s.root, path)
+	return fList(root, true)
+}
+
+func (s *SimpleFileStorage) GetPageList(path string) []string {
+	root := filepath.Join(s.root, path)
+	return fList(root, false)
+}
+
+func fList(root string, dir bool) []string {
 	list := []string{}
 
-	root := filepath.Join(s.root, path)
 	entries, err := ioutil.ReadDir(root)
 
 	if err != nil {
@@ -65,27 +76,13 @@ func (s *SimpleFileStorage) DirList(path string) []string {
 	}
 
 	for _, fi := range entries {
-		if !fi.IsDir() {
+		if (dir != fi.IsDir()) || strings.HasPrefix(fi.Name(), ".") {
 			continue
 		}
 
-		list = append(list, fi.Name()+"/")
+		list = append(list, fi.Name())
 	}
 
 	return list
-}
 
-func (s *SimpleFileStorage) GetPageList(root string) []string {
-	fmt.Println(root)
-	pages := []string{}
-
-	filepath.Walk(s.root, func(path string, info os.FileInfo, err error) error {
-		if filepath.Base(path) == pageInfoFilename {
-			pages = append(pages, filepath.ToSlash(filepath.Dir(path))[len(s.root):])
-			return filepath.SkipDir
-		}
-		return nil
-	})
-
-	return pages
 }
