@@ -4,7 +4,7 @@
 <body style="padding: 0.5em;">
 {{template "header" .}}
 {{range .Dirs}}
-  <div><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span> {{.}}</div>
+<div><span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span><a href="{{.}}"> {{.}}</a></div>
 {{end}}
 {{range .Pages}}
   <div><a href="{{.}}">{{.}}</a></div>
