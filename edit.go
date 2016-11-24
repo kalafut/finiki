@@ -12,12 +12,12 @@ func (wiki *Wiki) Edit(w http.ResponseWriter, r *http.Request) {
 	page, err := wiki.store.GetPage(path)
 
 	if err != nil {
-		page = &Page{Content: "Nothin'"}
+		page = "Nothin'"
 	}
 
 	vars := map[string]string{
 		"Path": path,
-		"Text": page.Content,
+		"Text": page,
 	}
 
 	tmpl := make(map[string]*template.Template)

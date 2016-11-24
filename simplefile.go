@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -9,18 +10,17 @@ import (
 
 const DEFAULT_EXT = ".md"
 
+var (
+	ErrPageNotFound = errors.New("Page Not Found")
+	ErrRevNotFound  = errors.New("Rev Not Found")
+	ErrPageCorrupt  = errors.New("Page Corrupt")
+	ErrFolderExists = errors.New("Folder already exists")
+)
+
 var enableDefaultExt = true
 
 type SimpleFileStorage struct {
 	root string
-}
-
-type Page struct {
-	Content string
-}
-
-func NewPage() Page {
-	return Page{}
 }
 
 func NewSimpleFileStorage(root string) SimpleFileStorage {
@@ -31,23 +31,21 @@ func NewSimpleFileStorage(root string) SimpleFileStorage {
 
 // GetPage returns the Page at path for a given rev. Use CurrentRev to request the latest version.
 // An error is returned if the page or requested rev is not found.
-func (s *SimpleFileStorage) GetPage(path string) (*Page, error) {
+func (s *SimpleFileStorage) GetPage(path string) (string, error) {
 	fullPath := filepath.Join(s.root, path)
 
 	page, err := ioutil.ReadFile(appendExt(fullPath))
 	if err != nil {
 		page, err = ioutil.ReadFile(fullPath)
 		if err != nil {
-			return nil, ErrPageNotFound
+			return "", ErrPageNotFound
 		}
 	}
 
-	p := Page{Content: string(page)}
-	return &p, nil
-
+	return string(page), nil
 }
 
-func (s *SimpleFileStorage) PutPage(path string, page *Page) error {
+func (s *SimpleFileStorage) PutPage(path string, page string) error {
 	os.MkdirAll(filepath.Join(s.root, filepath.Dir(path)), 0755)
 
 	fullpath := filepath.Join(s.root, path)
@@ -56,7 +54,7 @@ func (s *SimpleFileStorage) PutPage(path string, page *Page) error {
 	defer f.Close()
 
 	if err == nil {
-		f.WriteString(page.Content)
+		f.WriteString(page)
 	} else {
 		return ErrFolderExists
 	}

@@ -23,58 +23,55 @@ func testStorage(t *testing.T, s SimpleFileStorage) {
 }
 
 func testGetPage(t *testing.T, s SimpleFileStorage) {
-	var pg Page
+	var pg string
 	var err error
 	is := is.New(t)
 
 	// Test page not found
 	page, err := s.GetPage("/")
-	is.Nil(page)
+	is.Equal("", page)
 	is.Equal(err, ErrPageNotFound)
 
 	// Test putting and getting a page at the root level
-	pg = NewPage()
-	pg.Content = "test"
+	pg = "test"
 
-	s.PutPage("/t1", &pg)
+	s.PutPage("/t1", pg)
 	pg2, err := s.GetPage("/t1")
 	is.NotErr(err)
 
-	is.Equal(pg.Content, pg2.Content)
+	is.Equal(pg, pg2)
 
 	// Test putting and getting a page at a deep level
-	pg = NewPage()
-	pg.Content = "test2"
+	pg = "test2"
 
-	s.PutPage("/a/b/c/d/e/t2", &pg)
+	s.PutPage("/a/b/c/d/e/t2", pg)
 	pg2, err = s.GetPage("/a/b/c/d/t2")
-	is.Nil(page)
+	is.Equal("", pg2)
 	is.Equal(err, ErrPageNotFound)
 
 	pg2, err = s.GetPage("/a/b/c/d/e/t2")
 	is.NotErr(err)
 
-	is.Equal(pg.Content, pg2.Content)
+	is.Equal(pg, pg2)
 }
 
 func testPutPage(t *testing.T, s SimpleFileStorage) {
-	var pg Page
+	var pg string
 	var err error
 	is := is.New(t)
 
 	// Test putting a page atop an existing folder
-	pg = NewPage()
-	pg.Content = "test2"
+	pg = "test2"
 
-	err = s.PutPage("/putpage/a/test", &pg)
+	err = s.PutPage("/putpage/a/test", pg)
 	is.NotErr(err)
 
-	err = s.PutPage("/putpage", &pg)
+	err = s.PutPage("/putpage", pg)
 	is.Equal(err, ErrFolderExists)
 
-	err = s.PutPage("/putpage/a", &pg)
+	err = s.PutPage("/putpage/a", pg)
 	is.Equal(err, ErrFolderExists)
 
-	err = s.PutPage("/putpage/a/test", &pg)
+	err = s.PutPage("/putpage/a/test", pg)
 	is.NotErr(err)
 }

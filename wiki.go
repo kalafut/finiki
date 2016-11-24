@@ -52,7 +52,7 @@ func (wiki Wiki) Route(w http.ResponseWriter, r *http.Request) {
 
 // Show is the show endpoint of the Wiki
 func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
-	var page *Page
+	var page string
 	var err error
 
 	path := r.URL.Path
@@ -60,12 +60,12 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 	page, err = wiki.store.GetPage(path)
 
 	if err != nil {
-		page = &Page{Content: "Nothin'"}
+		page = "Nothin'"
 	} else {
 		saveRecent(path, wiki.store)
 	}
 
-	parsedContent := preParse(page.Content)
+	parsedContent := preParse(page)
 	vars := map[string]interface{}{
 		"Path":        path + "?action=edit",
 		"Text":        BytesAsHTML(ParsedMarkdown(parsedContent)),
@@ -90,11 +90,9 @@ func preParse(in string) string {
 }
 
 func saveRecent(path string, s SimpleFileStorage) {
-	page, err := s.GetPage("__system/recent")
-	if err == ErrPageNotFound {
-		page = &Page{}
-	}
-	lines := strings.Split(page.Content, "\n")
+	page, _ := s.GetPage("__system/recent")
+
+	lines := strings.Split(page, "\n")
 	lines = append([]string{path}, lines...)
 	dedupe := make([]string, 0)
 	uniqLines := make(map[string]bool)
@@ -106,7 +104,7 @@ func saveRecent(path string, s SimpleFileStorage) {
 		}
 	}
 
-	page.Content = strings.Join(dedupe, "\n")
+	page = strings.Join(dedupe, "\n")
 	s.PutPage("__system/recent", page)
 }
 
@@ -116,7 +114,7 @@ func loadRecent(s SimpleFileStorage, skipFirst bool) []string {
 
 	recents, err := s.GetPage("__system/recent")
 	if err == nil {
-		text = recents.Content
+		text = recents
 	}
 
 	list := strings.Split(strings.TrimSpace(text), "\n")
@@ -132,17 +130,10 @@ func (wiki *Wiki) Update(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	r.ParseForm()
 
-	page, err := wiki.store.GetPage(path)
-
-	if err != nil {
-		page = &Page{}
-	}
-
+	page, _ := wiki.store.GetPage(path)
 	newText := r.PostFormValue("text")
-	if newText != page.Content {
-		page.Content = newText
-
-		wiki.store.PutPage(path, page)
+	if newText != page {
+		wiki.store.PutPage(path, newText)
 	}
 
 	http.Redirect(w, r, path, 302)
