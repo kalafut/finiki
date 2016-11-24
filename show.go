@@ -37,7 +37,7 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 		"Path":        path + "?action=edit",
 		"Text":        BytesAsHTML(ParsedMarkdown(parsedContent)),
 		"Title":       path[1:],
-		"RecentPaths": loadRecent(wiki.store),
+		"RecentPaths": loadRecent(wiki.store, true),
 	}
 
 	templates["show.html"].ExecuteTemplate(w, "base", vars)
@@ -77,8 +77,9 @@ func saveRecent(path string, s Storage) {
 	s.PutPage("__system/recent", page)
 }
 
-func loadRecent(s Storage) []string {
+func loadRecent(s Storage, skipFirst bool) []string {
 	var text string
+	var start int
 
 	recents, err := s.GetPage("__system/recent", 0)
 	if err == nil {
@@ -88,5 +89,8 @@ func loadRecent(s Storage) []string {
 	list := strings.Split(strings.TrimSpace(text), "\n")
 
 	// skip the first entry since it will be the page we're on
-	return list[Min(1, len(list)):Min(len(list), RECENT_CNT+1)]
+	if skipFirst {
+		start = 1
+	}
+	return list[Min(start, len(list)):Min(len(list), RECENT_CNT+1)]
 }

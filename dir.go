@@ -15,7 +15,7 @@ func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 		"Path":        path + "?action=edit",
 		"Dirs":        dirs,
 		"Pages":       pages,
-		"RecentPaths": loadRecent(wiki.store),
+		"RecentPaths": loadRecent(wiki.store, false),
 	}
 
 	templates["dir.html"].ExecuteTemplate(w, "base", vars)
