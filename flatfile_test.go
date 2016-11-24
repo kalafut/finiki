@@ -9,6 +9,8 @@ import (
 )
 
 func TestInterface(t *testing.T) {
+	enableDefaultExt = false
+
 	dir, _ := ioutil.TempDir("", "")
 	s := NewFlatFileStorage(dir)
 	testStorage(t, s)
@@ -18,7 +20,6 @@ func TestInterface(t *testing.T) {
 	s2 := NewSimpleFileStorage(dir)
 	testStorage(t, s2)
 	os.RemoveAll(dir)
-
 }
 
 func testStorage(t *testing.T, s Storage) {

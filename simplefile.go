@@ -8,6 +8,9 @@ import (
 )
 
 //const pageInfoFilename = "pageinfo"
+const DEFAULT_EXT = ".md"
+
+var enableDefaultExt = true
 
 type SimpleFileStorage struct {
 	root string
@@ -29,7 +32,7 @@ func NewSimpleFileStorage(root string) *SimpleFileStorage {
 func (s *SimpleFileStorage) GetPage(path string, rev int) (*Page, error) {
 	revPath := filepath.Join(s.root, path)
 
-	page, err := ioutil.ReadFile(revPath)
+	page, err := ioutil.ReadFile(appendExt(revPath))
 	if err == nil {
 		p := Page{Content: string(page)}
 		return &p, nil
@@ -43,7 +46,7 @@ func (s *SimpleFileStorage) PutPage(path string, page *Page) error {
 
 	fullpath := filepath.Join(s.root, path)
 
-	f, err := os.Create(fullpath)
+	f, err := os.Create(appendExt(fullpath))
 	defer f.Close()
 
 	if err == nil {
@@ -61,8 +64,20 @@ func (s *SimpleFileStorage) DirList(path string) []string {
 }
 
 func (s *SimpleFileStorage) GetPageList(path string) []string {
+	pages := make([]string, 0)
+
 	root := filepath.Join(s.root, path)
-	return fList(root, false)
+	for _, page := range fList(root, false) {
+		pages = append(pages, strings.TrimSuffix(page, DEFAULT_EXT))
+	}
+	return pages
+}
+
+func appendExt(path string) string {
+	if enableDefaultExt && !strings.HasSuffix(path, DEFAULT_EXT) {
+		path = path + DEFAULT_EXT
+	}
+	return path
 }
 
 func fList(root string, dir bool) []string {
