@@ -2,16 +2,19 @@ package main
 
 import (
 	"net/http"
+	"regexp"
 	"strings"
 )
 
+const RECENT_CNT = 8
+
 // Wiki represents the entire Wiki, contains the db
 type Wiki struct {
-	store Storage
+	store SimpleFileStorage
 }
 
 // NewWiki creates a new Wiki
-func NewWiki(s Storage) *Wiki {
+func NewWiki(s SimpleFileStorage) *Wiki {
 	// Setup the wiki.
 	w := &Wiki{store: s}
 
@@ -19,7 +22,7 @@ func NewWiki(s Storage) *Wiki {
 }
 
 // DB returns the database associated with the handler.
-func (w *Wiki) Store() Storage {
+func (w *Wiki) Store() SimpleFileStorage {
 	return w.store
 }
 
@@ -45,4 +48,121 @@ func (wiki Wiki) Route(w http.ResponseWriter, r *http.Request) {
 	default:
 		wiki.Show(w, r)
 	}
+}
+
+// Show is the show endpoint of the Wiki
+func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
+	var page *Page
+	var err error
+
+	path := r.URL.Path
+
+	page, err = wiki.store.GetPage(path)
+
+	if err != nil {
+		page = &Page{Content: "Nothin'"}
+	} else {
+		saveRecent(path, wiki.store)
+	}
+
+	parsedContent := preParse(page.Content)
+	vars := map[string]interface{}{
+		"Path":        path + "?action=edit",
+		"Text":        BytesAsHTML(ParsedMarkdown(parsedContent)),
+		"Title":       path[1:],
+		"RecentPaths": loadRecent(wiki.store, true),
+	}
+
+	templates["show.html"].ExecuteTemplate(w, "base", vars)
+}
+
+// RedirectToShow redirects to the show endpoint using a HTTP 302
+/*
+func (w *Wiki) RedirectToShow(c web.C, rw http.ResponseWriter, r *http.Request) {
+	http.Redirect(rw, r, "/"+c.URLParams["name"], 302)
+}
+*/
+
+var reLink = regexp.MustCompile(`\[\[(.*?)\]\]`)
+
+func preParse(in string) string {
+	return reLink.ReplaceAllString(in, "[$1]($1)")
+}
+
+func saveRecent(path string, s SimpleFileStorage) {
+	page, err := s.GetPage("__system/recent")
+	if err == ErrPageNotFound {
+		page = &Page{}
+	}
+	lines := strings.Split(page.Content, "\n")
+	lines = append([]string{path}, lines...)
+	dedupe := make([]string, 0)
+	uniqLines := make(map[string]bool)
+
+	for _, line := range lines {
+		if _, ok := uniqLines[line]; !ok {
+			dedupe = append(dedupe, line)
+			uniqLines[line] = true
+		}
+	}
+
+	page.Content = strings.Join(dedupe, "\n")
+	s.PutPage("__system/recent", page)
+}
+
+func loadRecent(s SimpleFileStorage, skipFirst bool) []string {
+	var text string
+	var start int
+
+	recents, err := s.GetPage("__system/recent")
+	if err == nil {
+		text = recents.Content
+	}
+
+	list := strings.Split(strings.TrimSpace(text), "\n")
+
+	// skip the first entry since it will be the page we're on
+	if skipFirst {
+		start = 1
+	}
+	return list[Min(start, len(list)):Min(len(list), RECENT_CNT+1)]
+}
+
+func (wiki *Wiki) Update(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+	r.ParseForm()
+
+	page, err := wiki.store.GetPage(path)
+
+	if err != nil {
+		page = &Page{}
+	}
+
+	newText := r.PostFormValue("text")
+	if newText != page.Content {
+		page.Content = newText
+
+		wiki.store.PutPage(path, page)
+	}
+
+	http.Redirect(w, r, path, 302)
+}
+
+func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+
+	dirs := wiki.store.DirList(path)
+	pages := wiki.store.GetPageList(path)
+
+	// TODO put this back when Path type is sorted
+	//sort.Sort(paths)
+
+	vars := map[string]interface{}{
+		"Path":        path + "?action=edit",
+		"Dirs":        dirs,
+		"Pages":       pages,
+		"RecentPaths": loadRecent(wiki.store, false),
+	}
+
+	templates["dir.html"].ExecuteTemplate(w, "base", vars)
 }

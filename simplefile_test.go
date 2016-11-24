@@ -12,28 +12,23 @@ func TestInterface(t *testing.T) {
 	enableDefaultExt = false
 
 	dir, _ := ioutil.TempDir("", "")
-	s := NewFlatFileStorage(dir)
-	testStorage(t, s)
-	os.RemoveAll(dir)
-
-	dir, _ = ioutil.TempDir("", "")
 	s2 := NewSimpleFileStorage(dir)
 	testStorage(t, s2)
 	os.RemoveAll(dir)
 }
 
-func testStorage(t *testing.T, s Storage) {
+func testStorage(t *testing.T, s SimpleFileStorage) {
 	testGetPage(t, s)
 	testPutPage(t, s)
 }
 
-func testGetPage(t *testing.T, s Storage) {
+func testGetPage(t *testing.T, s SimpleFileStorage) {
 	var pg Page
 	var err error
 	is := is.New(t)
 
 	// Test page not found
-	page, err := s.GetPage("/", CurrentRev)
+	page, err := s.GetPage("/")
 	is.Nil(page)
 	is.Equal(err, ErrPageNotFound)
 
@@ -42,7 +37,7 @@ func testGetPage(t *testing.T, s Storage) {
 	pg.Content = "test"
 
 	s.PutPage("/t1", &pg)
-	pg2, err := s.GetPage("/t1", CurrentRev)
+	pg2, err := s.GetPage("/t1")
 	is.NotErr(err)
 
 	is.Equal(pg.Content, pg2.Content)
@@ -52,17 +47,17 @@ func testGetPage(t *testing.T, s Storage) {
 	pg.Content = "test2"
 
 	s.PutPage("/a/b/c/d/e/t2", &pg)
-	pg2, err = s.GetPage("/a/b/c/d/t2", CurrentRev)
+	pg2, err = s.GetPage("/a/b/c/d/t2")
 	is.Nil(page)
 	is.Equal(err, ErrPageNotFound)
 
-	pg2, err = s.GetPage("/a/b/c/d/e/t2", CurrentRev)
+	pg2, err = s.GetPage("/a/b/c/d/e/t2")
 	is.NotErr(err)
 
 	is.Equal(pg.Content, pg2.Content)
 }
 
-func testPutPage(t *testing.T, s Storage) {
+func testPutPage(t *testing.T, s SimpleFileStorage) {
 	var pg Page
 	var err error
 	is := is.New(t)

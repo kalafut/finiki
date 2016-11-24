@@ -9,7 +9,7 @@ import (
 func (wiki *Wiki) Edit(w http.ResponseWriter, r *http.Request) {
 	//path := ps.ByName("path")
 	path := r.URL.Path
-	page, err := wiki.store.GetPage(path, CurrentRev)
+	page, err := wiki.store.GetPage(path)
 
 	if err != nil {
 		page = &Page{Content: "Nothin'"}
@@ -23,5 +23,4 @@ func (wiki *Wiki) Edit(w http.ResponseWriter, r *http.Request) {
 	tmpl := make(map[string]*template.Template)
 	tmpl["edit.html"] = template.Must(template.ParseFiles("templates/edit.html", "templates/base.html"))
 	tmpl["edit.html"].ExecuteTemplate(w, "base", vars)
-
 }

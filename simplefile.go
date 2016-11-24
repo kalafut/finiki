@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-//const pageInfoFilename = "pageinfo"
 const DEFAULT_EXT = ".md"
 
 var enableDefaultExt = true
@@ -16,25 +15,28 @@ type SimpleFileStorage struct {
 	root string
 }
 
-//type PageInfo struct {
-//	filename   string
-//	CurrentRev int
-//}
+type Page struct {
+	Content string
+}
 
-func NewSimpleFileStorage(root string) *SimpleFileStorage {
-	return &SimpleFileStorage{
+func NewPage() Page {
+	return Page{}
+}
+
+func NewSimpleFileStorage(root string) SimpleFileStorage {
+	return SimpleFileStorage{
 		root: root,
 	}
 }
 
 // GetPage returns the Page at path for a given rev. Use CurrentRev to request the latest version.
 // An error is returned if the page or requested rev is not found.
-func (s *SimpleFileStorage) GetPage(path string, rev int) (*Page, error) {
-	revPath := filepath.Join(s.root, path)
+func (s *SimpleFileStorage) GetPage(path string) (*Page, error) {
+	fullPath := filepath.Join(s.root, path)
 
-	page, err := ioutil.ReadFile(appendExt(revPath))
-	if os.IsNotExist(err) {
-		page, err = ioutil.ReadFile(revPath)
+	page, err := ioutil.ReadFile(appendExt(fullPath))
+	if err != nil {
+		page, err = ioutil.ReadFile(fullPath)
 		if err != nil {
 			return nil, ErrPageNotFound
 		}
