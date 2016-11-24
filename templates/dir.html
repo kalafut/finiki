@@ -3,6 +3,7 @@
 {{define "body"}}
 <body style="padding: 0.5em;">
 {{template "header" .}}
+{{template "recent" .}}
 <p>
 {{range .Dirs}}
 <div><a href="{{.}}" class="dir_dir"> {{.}}/</a></div>

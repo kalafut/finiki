@@ -1,9 +1,6 @@
 package main
 
-import (
-	"html/template"
-	"net/http"
-)
+import "net/http"
 
 func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
@@ -15,14 +12,13 @@ func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	//sort.Sort(paths)
 
 	vars := map[string]interface{}{
-		"Path":  path + "?action=edit",
-		"Dirs":  dirs,
-		"Pages": pages,
+		"Path":        path + "?action=edit",
+		"Dirs":        dirs,
+		"Pages":       pages,
+		"RecentPaths": loadRecent(wiki.store),
 	}
 
-	tmpl := make(map[string]*template.Template)
-	tmpl["dir.html"] = template.Must(template.ParseFiles("templates/header.html", "templates/dir.html", "templates/base.html"))
-	tmpl["dir.html"].ExecuteTemplate(w, "base", vars)
+	templates["dir.html"].ExecuteTemplate(w, "base", vars)
 }
 
 //// RedirectToShow redirects to the show endpoint using a HTTP 302

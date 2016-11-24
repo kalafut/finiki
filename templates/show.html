@@ -2,6 +2,8 @@
 {{define "body"}}
 <body style="padding: 0.5em;">
 {{template "header" .}}
+{{template "recent" .}}
+
 {{.Text}}
 <a href="{{.Path}}" class="pure-button">Edit</a>
 <a href="{{.Path}}/rename" class="pure-button">Rename</a>

@@ -33,12 +33,16 @@ func (s *SimpleFileStorage) GetPage(path string, rev int) (*Page, error) {
 	revPath := filepath.Join(s.root, path)
 
 	page, err := ioutil.ReadFile(appendExt(revPath))
-	if err == nil {
-		p := Page{Content: string(page)}
-		return &p, nil
+	if os.IsNotExist(err) {
+		page, err = ioutil.ReadFile(revPath)
+		if err != nil {
+			return nil, ErrPageNotFound
+		}
 	}
 
-	return nil, ErrPageNotFound
+	p := Page{Content: string(page)}
+	return &p, nil
+
 }
 
 func (s *SimpleFileStorage) PutPage(path string, page *Page) error {
@@ -87,14 +91,13 @@ func fList(root string, dir bool) []string {
 
 	if err == nil {
 		for _, fi := range entries {
-			if (dir != fi.IsDir()) || strings.HasPrefix(fi.Name(), ".") {
+			if dir != fi.IsDir() || strings.HasPrefix(fi.Name(), ".") ||
+				(fi.IsDir() && strings.HasPrefix(fi.Name(), "__")) {
 				continue
 			}
-
 			list = append(list, fi.Name())
 		}
 	}
 
 	return list
-
 }
