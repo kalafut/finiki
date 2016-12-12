@@ -41,8 +41,12 @@ func (wiki Wiki) Route(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.PostFormValue("update") == "update":
 		wiki.Update(w, r)
+	case r.PostFormValue("delete") == "delete":
+		wiki.DoDelete(w, r)
 	case action == "edit":
 		wiki.Edit(w, r)
+	case action == "delete":
+		wiki.Delete(w, r)
 	case isDir:
 		wiki.Dir(w, r)
 	default:
@@ -67,7 +71,7 @@ func (wiki *Wiki) Show(w http.ResponseWriter, r *http.Request) {
 
 	parsedContent := preParse(page)
 	vars := map[string]interface{}{
-		"Path":        path + "?action=edit",
+		"Path":        path,
 		"Text":        BytesAsHTML(ParsedMarkdown(parsedContent)),
 		"Title":       path[1:],
 		"RecentPaths": loadRecent(wiki.store, true),
@@ -139,6 +143,12 @@ func (wiki *Wiki) Update(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, path, 302)
 }
 
+func (wiki *Wiki) DoDelete(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+	wiki.store.DeletePage(path)
+	http.Redirect(w, r, "/", 302)
+}
+
 func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 
@@ -156,4 +166,16 @@ func (wiki *Wiki) Dir(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templates["dir.html"].ExecuteTemplate(w, "base", vars)
+}
+
+func (wiki *Wiki) Delete(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+
+	vars := map[string]interface{}{
+		"Path":        path,
+		"Title":       path[1:],
+		"RecentPaths": loadRecent(wiki.store, false),
+	}
+
+	templates["delete.html"].ExecuteTemplate(w, "base", vars)
 }

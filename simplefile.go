@@ -62,6 +62,14 @@ func (s *SimpleFileStorage) PutPage(path string, page string) error {
 	return nil
 }
 
+func (s *SimpleFileStorage) DeletePage(path string) error {
+	err := os.Remove(filepath.Join(s.root, appendExt(path)))
+	if err != nil {
+		panic(err)
+	}
+	return err
+}
+
 func (s *SimpleFileStorage) DirList(path string) []string {
 	root := filepath.Join(s.root, path)
 	return fList(root, true)

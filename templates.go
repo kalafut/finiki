@@ -22,8 +22,9 @@ func basename(path string) string {
 func initTemplates() map[string]*template.Template {
 	tmpl := make(map[string]*template.Template)
 	tmplMap := map[string][]string{
-		"show.html": {"recent.html", "header.html", "show.html", "base.html"},
-		"dir.html":  {"recent.html", "header.html", "dir.html", "base.html"},
+		"show.html":   {"recent.html", "header.html", "show.html", "base.html"},
+		"dir.html":    {"recent.html", "header.html", "dir.html", "base.html"},
+		"delete.html": {"recent.html", "header.html", "delete.html", "base.html"},
 	}
 
 	for name, files := range tmplMap {
