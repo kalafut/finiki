@@ -1,0 +1,13 @@
+{{define "head"}} {{end}}
+{{define "body"}}
+<body style="padding: 0.5em;">
+{{template "header" .}}
+{{template "recent" .}}
+
+<a href="{{.Path}}?action=edit" class="pure-button">Edit</a>
+{{.Text}}
+<a href="{{.Path}}?action=edit" class="pure-button">Edit</a>
+<a href="{{.Path}}/rename" class="pure-button">Rename</a>
+<a href="{{.Path}}?action=delete" class="pure-button">Delete</a>
+</body>
+{{end}}

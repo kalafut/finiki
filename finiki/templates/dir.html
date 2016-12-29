@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<body style="padding: 0.5em;">
+{% include "header.html" %}
+{% include "recent.html" %}
+<p>
+{% for dir in dirs %}
+<div><a href="{{ dir }}/" class="dir_dir">{{ dir }}/</a></div>
+{% endfor %}
+
+{% for page in pages %}
+<div><a href="{{ page }}" class="dir_page">{{ page }}</a></div>
+{% endfor %}
+
+</p>
+</body>
+{% endblock %}

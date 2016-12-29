@@ -1,0 +1,11 @@
+<div>
+    {#
+{{ $plen := dec (len .RecentPaths) }}
+{{range $idx, $path := .RecentPaths}}
+<a href="{{.}}">{{ $path | basename}}</a>
+{{if lt $idx $plen }}
+-
+{{end}}
+{{end}}
+    #}
+</div>
