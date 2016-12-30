@@ -18,6 +18,12 @@ def index(path):
 
     if isdir:
         return render_template('dir.html', dirs=dirs(path), pages=pages(path))
+    action = request.args.get('action')
+
+    if action == 'edit':
+        with open(join(ROOT, path)) as f:
+            contents = f.read()
+            return render_template('edit.html', text=contents)
 
     with open(join(ROOT, path)) as f:
         contents = f.read()

@@ -1,13 +1,15 @@
-{{define "head"}}
+{% extends "base.html" %}
+{% block head %}
 <script src="https://toplan.github.io/js/vim.js"></script>
-{{end}}
+{% endblock %}
 
-{{define "body"}}
+
+{% block body %}
 <body style="padding: 0.5em;">
 <div class="container">
-    <form action="{{.Path}}" method="POST">
+    <form action="{{ path }}" method="POST">
         <div class="row">
-            <textarea name="text" class="col-md-12" rows="10">{{.Text}}</textarea>
+            <textarea name="text" class="col-md-12" rows="10">{{ text|safe }}</textarea>
         </div>
         <div class="pure-controls">
             <button type="submit" class="pure-button pure-button-primary" value="update" name="update">Save</button>
@@ -26,4 +28,4 @@ vim.open({
 });
 </script>
 </body>
-{{end}}
+{% endblock %}
