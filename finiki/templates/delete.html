@@ -1,13 +1,14 @@
-{{define "head"}} {{end}}
-{{define "body"}}
-<body style="padding: 0.5em;">
-{{template "header" .}}
-{{template "recent" .}}
+{% extends "base.html" %}
 
-Are you sure you want to delete: <b>{{.Path}}</b>?
-<form action="{{.Path}}" method="POST">
-    <a href="{{.Path}}" class="pure-button">Cancel</a>
+{% block body %}
+<body style="padding: 0.5em;">
+{% include "header.html" %}
+{% include "recent.html" %}
+
+Are you sure you want to delete: <b>{{ path }}</b>?
+<form action="{{ path }}" method="POST">
+    <a href="{{ path }}" class="pure-button">Cancel</a>
     <button type="submit" class="pure-button pure-button-primary" value="delete" name="delete">Delete</button>
 </form>
 </body>
-{{end}}
+{% endblock %}
