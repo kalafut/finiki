@@ -27,7 +27,8 @@ def index(path):
                 return redirect(path)
 
     if isdir:
-        return render_template('dir.html', dirs=dirs(path), pages=pages(path))
+        d, p = scan(path)
+        return render_template('dir.html', dirs=d, pages=p)
     action = request.args.get('action')
 
     if action == 'edit':
@@ -48,15 +49,15 @@ def index(path):
         contents = 'New Page'
         return render_template('edit.html', text=contents, path=path)
 
-def dirs(path):
+def scan(path):
+    d, p = [], []
     for entry in os.scandir(tod(path)):
-        if not entry.name.startswith(('.', '__')) and entry.is_dir():
-            yield entry.name
-
-def pages(path):
-    for entry in os.scandir(tod(path)):
-        if not entry.name.startswith(('.', '__')) and entry.is_file():
-            yield os.path.splitext(entry.name)[0]
+        if not entry.name.startswith(('.', '__')):
+            if entry.is_dir():
+                d.append(entry.name)
+            else:
+                p.append(os.path.splitext(entry.name)[0])
+    return d, p
 
 @contextmanager
 def opener(path, mode='r'):
