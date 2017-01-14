@@ -5,10 +5,10 @@
 {% include "header.html" %}
 {% include "recent.html" %}
 
-<a href="{{Path}}?action=edit" class="pure-button">Edit</a>
+<a href="/{{ path }}?action=edit" class="pure-button">Edit</a>
 {{ text|safe }}
-<a href="{{Path}}?action=edit" class="pure-button">Edit</a>
-<a href="{{Path}}/rename" class="pure-button">Rename</a>
-<a href="{{Path}}?action=delete" class="pure-button">Delete</a>
+<a href="/{{ path }}?action=edit" class="pure-button">Edit</a>
+<a href="/{{ path }}/rename" class="pure-button">Rename</a>
+<a href="/{{ path }}?action=delete" class="pure-button">Delete</a>
 </body>
 {% endblock %}

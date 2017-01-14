@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<body style="padding: 0.5em;">
+{% include "header.html" %}
+{% include "recent.html" %}
+<h1>Error</h1>
+<p> {{ message }} </p>
+<a href="/" class="pure-button">Return</a>
+</body>
+{% endblock %}
