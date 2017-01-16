@@ -9,6 +9,7 @@ markdown = mistune.Markdown()
 
 ROOT = '/Users/kalafut/Dropbox/finiki'
 DEFAULT_EXT = 'md'
+RECENT_CNT = 7
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>', methods=['GET', 'POST'])
@@ -49,6 +50,7 @@ def index(path):
         contents = 'New Page'
         return render_template('edit.html', text=contents, path=path)
 
+
 def scan(path):
     d, p = [], []
     for entry in os.scandir(tod(path)):
@@ -58,6 +60,14 @@ def scan(path):
             else:
                 p.append(os.path.splitext(entry.name)[0])
     return d, p
+
+
+def load_recent(skip_first=False, recent_cnt=RECENT_CNT):
+    with open(tof('__system/recent')) as f:
+        lines = f.readlines()
+        start = 1 if skip_first else 0
+        return (x.strip() for x in lines[start:start + recent_cnt])
+
 
 @contextmanager
 def opener(path, mode='r'):
@@ -71,3 +81,4 @@ def tof(path):
 
 def tod(path):
     return os.path.join(ROOT, path)
+
