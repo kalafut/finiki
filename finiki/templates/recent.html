@@ -1,11 +1,6 @@
 <div>
-    {#
-{{ $plen := dec (len .RecentPaths) }}
-{{range $idx, $path := .RecentPaths}}
-<a href="{{.}}">{{ $path | basename}}</a>
-{{if lt $idx $plen }}
--
-{{end}}
-{{end}}
-    #}
+    {% for path in recents %}
+    <a href="/{{ path }}">{{ path | basename }}</a>
+    {% if not loop.last %} - {% endif %}
+    {% endfor %}
 </div>
