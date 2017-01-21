@@ -7,7 +7,7 @@ import jinja2
 
 import mistune
 
-markdown = mistune.Markdown()
+markdown = mistune.Markdown(hard_wrap=True)
 
 ROOT = '/Users/kalafut/Dropbox/finiki'
 DEFAULT_EXT = 'md'
