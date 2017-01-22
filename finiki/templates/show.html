@@ -1,14 +1,36 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<body style="padding: 0.5em;">
 {% include "header.html" %}
 {% include "recent.html" %}
+
+<input type="text" id="unibar" autofocus><br>
 
 <a href="/{{ path }}?action=edit" class="pure-button">Edit</a>
 {{ text|safe }}
 <a href="/{{ path }}?action=edit" class="pure-button">Edit</a>
 <a href="/{{ path }}/rename" class="pure-button">Rename</a>
 <a href="/{{ path }}?action=delete" class="pure-button">Delete</a>
-</body>
+
+<script>
+var countries = [
+    { value: 'Andorra', data: 'AD' },
+    // ...
+    { value: 'Zimbabwe', data: 'ZZ' }
+];
+
+$('input[type=text]').on('keydown', function(e) {
+    if (e.which == 13) {
+        //window.location.href = '/' + $('#unibar').val();
+    }
+});
+$('#unibar').autocomplete({
+    serviceUrl: '/__autocomplete/pages',
+    dataType: 'json',
+    //lookup: countries,
+    onSelect: function (suggestion) {
+        alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+    }
+});
+</script>
 {% endblock %}

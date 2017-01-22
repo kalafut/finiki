@@ -2,7 +2,7 @@ import os
 from collections import OrderedDict
 from contextlib import contextmanager
 from finiki import app
-from flask import redirect, render_template, request
+from flask import redirect, render_template, request, jsonify
 import jinja2
 
 import mistune
@@ -18,6 +18,9 @@ RECENT_CNT = 8
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>', methods=['GET', 'POST'])
 def index(path):
+    if path.startswith('__autocomplete'):
+        return autocomplete(path)
+
     isdir = os.path.isdir(tod(path))
     if isdir and not path.endswith('/') and path != '':
         return redirect(path + '/'), 303
@@ -55,6 +58,13 @@ def index(path):
     except FileNotFoundError:
         contents = 'New Page'
         return render_template('edit.html', text=contents, path=path)
+
+
+def autocomplete(path):
+    d, s = scan('')
+    query =  request.args.get('query')
+    r = [ {'value': x, 'data': x} for x in s if query in x ]
+    return jsonify(suggestions=r)
 
 
 def scan(path):
