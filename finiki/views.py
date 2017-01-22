@@ -9,7 +9,12 @@ import mistune
 
 markdown = mistune.Markdown(hard_wrap=True)
 
-ROOT = '/Users/kalafut/Dropbox/finiki'
+try:
+    ROOT = os.environ['FINIKI_ROOT']
+except KeyError:
+    print('Set the FINIKI_ROOT environment variable to your document root.')
+    exit(1)
+
 DEFAULT_EXT = 'md'
 RECENT_CNT = 8
 
@@ -40,7 +45,7 @@ def index(path):
     if action == 'edit':
         with opener(path) as f:
             contents = f.read()
-            return render_template('edit.html', text=contents, path=path)
+            return render_template('edit.html', text=contents, path=path, title=os.path.basename(path))
     elif action == 'delete':
         return render_template('delete.html', path=path)
 
@@ -48,7 +53,7 @@ def index(path):
         with opener(path) as f:
             contents = f.read()
             save_recent(path)
-            return render_template('show.html', text=markdown(contents), path=path, recents=load_recent(skip_first=True))
+            return render_template('show.html', text=markdown(contents), path=path, recents=load_recent(skip_first=True), title=os.path.basename(path))
     except NotADirectoryError:
         msg = "You cannot have paths under a page."
         return render_template('error.html', message=msg)
