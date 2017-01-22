@@ -33,7 +33,7 @@ def index(path):
 
     if isdir:
         d, p = scan(path)
-        return render_template('dir.html', dirs=d, pages=p, recents=load_recent(skip_first=True))
+        return render_template('dir.html', dirs=d, pages=p, recents=load_recent(skip_first=False))
 
     action = request.args.get('action')
 
