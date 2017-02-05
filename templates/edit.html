@@ -8,11 +8,11 @@
 <body style="padding: 0.5em;">
 <div class="container">
     <form action="/{{ path }}" method="POST">
+        <div class="row" style="margin-bottom: 1em">
+            <button type="submit" class="pure-button pure-button-primary" value="update" name="update">Save</button>
+        </div>
         <div class="row">
             <textarea name="text" class="col-md-12" rows="10" autofocus>{{ text|safe }}</textarea>
-        </div>
-        <div class="pure-controls">
-            <button type="submit" class="pure-button pure-button-primary" value="update" name="update">Save</button>
         </div>
     </form>
 </div>
