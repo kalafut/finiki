@@ -1,12 +1,14 @@
+#!/usr/bin/env python3
+
 import os
 from collections import OrderedDict
 from contextlib import contextmanager
-from finiki import app
-from flask import redirect, render_template, request
+from flask import Flask, redirect, render_template, request
 import jinja2
 
 import mistune
 
+app = Flask(__name__)
 markdown = mistune.Markdown(hard_wrap=True)
 
 try:
@@ -17,7 +19,6 @@ except KeyError:
 
 DEFAULT_EXT = 'md'
 RECENT_CNT = 8
-
 
 
 @app.route('/', defaults={'path': ''})
@@ -107,3 +108,5 @@ def tod(path):
     return os.path.join(ROOT, path)
 
 
+if __name__ == "__main__":
+    app.run()

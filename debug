@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Start app using flask command, which is preferred when debugging
+FLASK_DEBUG=1 FLASK_APP=finiki.py flask run

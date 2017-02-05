@@ -27,3 +27,4 @@ bin/
 vendor
 finiki.egg-info
 finiki/__pycache__
+*.pyc
