@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<body style="padding: 0.5em;">
 {% include "header.html" %}
 {% include "recent.html" %}
 
@@ -10,5 +9,12 @@
 <a href="/{{ path }}?action=edit" class="pure-button">Edit</a>
 <a href="/{{ path }}/rename" class="pure-button">Rename</a>
 <a href="/{{ path }}?action=delete" class="pure-button">Delete</a>
-</body>
+<script>
+$('body').on('keydown', function(e) {
+    if (e.which == 69) {
+        window.location.href = window.location.href + '?action=edit';
+    }
+});
+</script>
+
 {% endblock %}
